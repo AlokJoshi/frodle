@@ -1,0 +1,40 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1em;
+}
+#title,#background{
+  background:#020202;
+  color: #e2e2e2;
+  text-align: center;
+}
+#background:hover{
+  cursor: pointer;
+}
+#backgroundinfo p:nth-of-type(even){
+  background-color: beige;
+}
+.hidden{
+  display:none;
+}
+#register{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform: translate(-50%,-50%) perspective(1px);
+}
+input{
+  padding:3px;
+}
+#registrationitems{
+  display:grid;
+  grid-template-columns: 100px 200px;
+}
+#submitregistration{
+  padding:5px;
+}
+#registrationheading,#submitregistration{
+  text-align: center;
+}
