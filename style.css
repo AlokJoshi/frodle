@@ -13,6 +13,12 @@
 #background:hover{
   cursor: pointer;
 }
+#btn-login,#btn-logout:hover{
+  cursor:pointer;
+}
+#btn-login:disabled,#btn-logout:disabled{
+  cursor:not-allowed;
+}
 #backgroundinfo p:nth-of-type(even){
   background-color: beige;
 }
@@ -27,14 +33,22 @@
 }
 input{
   padding:3px;
-}
-#registrationitems{
-  display:grid;
-  grid-template-columns: 100px 200px;
-}
-#submitregistration{
-  padding:5px;
-}
-#registrationheading,#submitregistration{
+  font-size: 40px;
   text-align: center;
+}
+
+#games{
+  border:1px solid #e2e2e2;
+  display:grid;
+  grid-template-columns: 1fr 300px 1fr;
+  grid-template-rows: 400px;
+}
+.tile{
+  border:1px solid #e2e2e2;
+  width:50px;
+  height:50px;
+}
+.row{
+  display:grid;
+  grid-template-columns: 60px 60px 60px 60px 60px;
 }

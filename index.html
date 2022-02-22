@@ -13,7 +13,11 @@
 </head>
 
 <body>
-  <div id="title">Frodle</div>
+  <div id="title">
+    <span>Frodle</span>
+    <button id="btn-login" disabled="true" onclick="login()">Log in</button>
+    <button id="btn-logout" disabled="true" onclick="logout()">Log out</button>
+  </div>
   <div id="background">Background</div>
   <div id="backgroundinfo" class="hidden">
     <p>It is just Wordle with friends. It goes like this..</p>
@@ -46,8 +50,26 @@
     </p>
   </div>
   </div>
-  <button id="btn-login" disabled="true" onclick="login()">Log in</button>
-    <button id="btn-logout" disabled="true" onclick="logout()">Log out</button>
+  <div id="games">
+    <div id="activegames">
+      <h2>Active Games</h2>
+      <div id="activegameslist"></div>
+    </div>
+    <div id="currentgame">
+      <h2>Current Game</h2>
+      <div id="row1" class="row"><input class="tile"><input class="tile"><input class="tile"><input class="tile"><input class="tile"></div>
+      <div id="row2" class="row"><input class="tile"><input class="tile"><input class="tile"><input class="tile"><input class="tile"></div>
+      <div id="row3" class="row"><input class="tile"><input class="tile"><input class="tile"><input class="tile"><input class="tile"></div>
+      <div id="row4" class="row"><input class="tile"><input class="tile"><input class="tile"><input class="tile"><input class="tile"></div>
+      <div id="row5" class="row"><input class="tile"><input class="tile"><input class="tile"><input class="tile"><input class="tile"></div>
+      <div id="row6" class="row"><input class="tile"><input class="tile"><input class="tile"><input class="tile"><input class="tile"></div>
+    </div>
+    <div id="completedgames">
+      <h2>Completed Games</h2>
+      <div id="completedgameslist"></div>
+    </div>
+  </div>
+
   <!-- <div id="register">
     <h2 id="registrationheading">Register</h2>
     <br>
@@ -66,7 +88,8 @@
   <div id="content" style="display:none">
   </div>
   <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
-  <script src="script.js"></script>
+  <script src="data.js" type="module"></script>
+  <script src="script.js" type="module"></script>
 </body>
 
 </html>

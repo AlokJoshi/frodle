@@ -10,6 +10,18 @@ function getAllUsers(req, res) {
     res.sendStatus(500)
   })
 }
+function getUser(req, res) {
+  const email=req.params.email
+  knex('fr_players')
+  .where('email',email)
+  .then(data => {
+    res.json(data)
+  })
+  .catch(err => {
+    console.error(`Error in getUser: ${err}`)
+    res.sendStatus(500)
+  })
+}
 function addUser(req, res) {
   let email=req.body.email
   let pwd=req.body.pwd
@@ -50,6 +62,6 @@ function deleteUser(req, res) {
 module.exports = {
   getAllUsers,
   addUser,
-  deleteUser
-  
+  deleteUser,
+  getUser
 }

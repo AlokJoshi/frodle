@@ -66,9 +66,33 @@ function getAllMatches(req, res) {
     res.sendStatus(500)  
   })
 }
+
+function getAllMatches2(req, res) {
+  let playerid = req.params.playerid
+  console.log(`In getAllMatches2, playerid:${playerid}`)
+  knex.raw(`
+    select matches1.*,fr_players.nickname from fr_matches as matches1  
+    inner join fr_players on matches1.player2id = fr_players.playerid 
+    where player1id = ? and not (matches1.player1done = true)
+    union
+    select matches2.*,fr_players.nickname  from fr_matches as matches2 
+    inner join fr_players on matches2.player1id = fr_players.playerid
+    where player2id = ? and not (matches2.player2done = true)
+  `,[playerid,playerid])
+  .on('query',(q)=>console.log(q.sql))
+  .then(data=>{
+    res.json(data.rows)
+  })
+  .catch(err=>{
+    console.error(`Error in getAllMatches: ${err}`)
+    res.sendStatus(500)  
+  })
+}
+
 module.exports = {
   getAllMatchesAsInitiator,
   getAllMatchesAsResponder,
   updatePlayerWord,
-  getAllMatches
+  getAllMatches,
+  getAllMatches2
 }

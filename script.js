@@ -1,6 +1,23 @@
 let auth0 = null;
+import {getactiveGames, createUserIfNeeded, getUser} from './data.js'
+const updateactiveGames= async (playerid)=>{
+  const games = await getactiveGames(playerid)
+  console.log(games)
+  const activegames = document.getElementById('activegameslist')
+  for(let i = 0;i<games.length;i++){
+    let el = document.createElement('div')
+    el.innerHTML=`Match :${games[i].matchid} vs ${games[i].nickname}`
+    activegames.append(el)
+  }
+}
 
 window.addEventListener('load', async () => {
+  document.getElementById('background').addEventListener('click', () => {
+    debugger
+    console.log(`Clicked on background element`)
+    document.getElementById('backgroundinfo').classList.toggle('hidden')
+  })
+
   
   await configureClient()
   updateUI()
@@ -22,10 +39,6 @@ window.addEventListener('load', async () => {
     updateUI()
 
   }
-  document.getElementById('background').addEventListener('click', () => {
-    document.getElementById('backgroundinfo').classList.toggle('hidden')
-  })
-  
   // Use replaceState to redirect the user away and remove the querystring parameters
   window.history.replaceState({}, document.title, "/");
 
@@ -35,6 +48,8 @@ const updateUI = async () => {
   const isAuthenticated = await auth0.isAuthenticated()
   document.getElementById(`btn-logout`).disabled = !isAuthenticated
   document.getElementById(`btn-login`).disabled = isAuthenticated
+  console.log(JSON.stringify(auth0.getUser()))
+  updateactiveGames(1)
 }
 /**
  * Starts the authentication flow
