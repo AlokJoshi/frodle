@@ -1,6 +1,16 @@
 async function getactiveGames(playerid) {
   try {
-    const response = await fetch(`/api/matches/${playerid}`)
+    const response = await fetch(`/api/matches/active/${playerid}`)
+    const json = response.json()
+    return json
+  } catch (err) {
+    console.log(`Error in /api/matches/${playerid}`)
+    new Error(`Error in /api/matches/${playerid}`)
+  }
+}
+async function getcompletedGames(playerid) {
+  try {
+    const response = await fetch(`/api/matches/completed/${playerid}`)
     const json = response.json()
     return json
   } catch (err) {
@@ -50,6 +60,7 @@ async function createUserIfNeeded(email, nickname) {
 
 export {
   getactiveGames,
+  getcompletedGames,
   getUser,
   createUserIfNeeded
 }

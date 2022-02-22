@@ -25,12 +25,7 @@
 .hidden{
   display:none;
 }
-#register{
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform: translate(-50%,-50%) perspective(1px);
-}
+
 input{
   padding:3px;
   font-size: 40px;
@@ -48,7 +43,56 @@ input{
   width:50px;
   height:50px;
 }
+.tile.active{
+  border:1px solid red;
+}
 .row{
   display:grid;
   grid-template-columns: 60px 60px 60px 60px 60px;
+}
+.wrong_letter{
+  background: gray;
+  color: black;
+}
+.correct_letter_wrong_position{
+  background: yellow;
+  color: black;
+}
+.correct_letter_correct_position{
+  background: green;
+  color: white;
+}
+
+.key-container {
+  height: 200px;
+}
+.key-board{
+  margin: 0 8px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.key-row{
+  display: flex;
+  width: 100%;
+  margin: 0 auto 8px auto;
+  touch-action: manipulation;
+}
+.key-row button{
+  background: #ccc;
+  font-family: inherit;
+  font-weight: bold;
+  border: 0;
+  padding: 4px;
+  margin: 0 6px 0 0;
+  height: 58px;
+  border-radius: 4px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  flex: 1 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.3);
 }
