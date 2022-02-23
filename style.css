@@ -30,13 +30,15 @@ input{
   padding:3px;
   font-size: 40px;
   text-align: center;
+  caret-color:transparent;
 }
 
 #games{
   border:1px solid #e2e2e2;
   display:grid;
-  grid-template-columns: 1fr 300px 1fr;
+  grid-template-columns: 1fr 320px 1fr;
   grid-template-rows: 400px;
+  /* align-items: stretch; */
 }
 .tile{
   border:1px solid #e2e2e2;
@@ -44,12 +46,13 @@ input{
   height:50px;
 }
 .tile.active{
-  border:1px solid red;
+  border:2px solid red;
+  border-radius: 5px;
 }
-.row{
+/* .row{
   display:grid;
-  grid-template-columns: 60px 60px 60px 60px 60px;
-}
+  grid-template-columns: 50px 50px 50px 50px 50px;
+} */
 .wrong_letter{
   background: gray;
   color: black;
@@ -95,4 +98,34 @@ input{
   align-items: center;
   text-transform: uppercase;
   -webkit-tap-highlight-color: rgba(0,0,0,0.3);
+}
+
+#currentgame{
+  background-color: #050505;
+}
+#onlyinputs{
+  text-align: center;
+  row-gap:10px;
+  margin-left: 10px;
+}
+.row{
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+  gap: 11px;
+}
+.activegame{
+  cursor:pointer;
+}
+.t0{
+  background:#020202;
+  color:#e2e2e2;
+}
+.t1{
+  background:yellow;
+  color:#020202;
+}
+.t2{
+  background:green;
+  color:#020202;
 }

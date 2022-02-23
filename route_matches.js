@@ -1,3 +1,4 @@
+const { json } = require('express/lib/response')
 const knex = require('./dbservice')
 
 function getAllMatchesAsInitiator(req, res) {
@@ -69,7 +70,7 @@ function getAllMatches(req, res) {
 
 function getAllMatches2(req, res) {
   let playerid = req.params.playerid
-  console.log(`In getAllMatches2, playerid:${playerid}`)
+  //console.log(`In getAllMatches2, playerid:${playerid}`)
   knex.raw(`
     select matches1.*,fr_players.nickname from fr_matches as matches1  
     inner join fr_players on matches1.player2id = fr_players.playerid 
@@ -79,7 +80,7 @@ function getAllMatches2(req, res) {
     inner join fr_players on matches2.player1id = fr_players.playerid
     where player2id = ? and not (matches2.player2done = true)
   `,[playerid,playerid])
-  .on('query',(q)=>console.log(q.sql))
+  //.on('query',(q)=>console.log(q.sql))
   .then(data=>{
     res.json(data.rows)
   })
@@ -91,7 +92,7 @@ function getAllMatches2(req, res) {
 
 function getAllMatches3(req, res) {
   let playerid = req.params.playerid
-  console.log(`In getAllMatches2, playerid:${playerid}`)
+  // console.log(`In getAllMatches3, playerid:${playerid}`)
   knex.raw(`
     select matches1.*,fr_players.nickname from fr_matches as matches1  
     inner join fr_players on matches1.player2id = fr_players.playerid 
@@ -101,7 +102,7 @@ function getAllMatches3(req, res) {
     inner join fr_players on matches2.player1id = fr_players.playerid
     where player2id = ? and (matches2.player2done = true)
   `,[playerid,playerid])
-  .on('query',(q)=>console.log(q.sql))
+  // .on('query',(q)=>console.log(q.sql))
   .then(data=>{
     res.json(data.rows)
   })
@@ -111,6 +112,24 @@ function getAllMatches3(req, res) {
   })
 }
 
+// This is not needed
+// function getMatch(req,res){
+//   let matchid = req.params.matchid
+//   let playerid = req.params.playerid
+//   knex('fr_matches')
+//   .where('matchid',matchid)
+//   .then((data) => {
+//     if(data[0].player1id==playerid){
+//       res.json(data[0].player1word)
+//     }else if(data[0].player2id==playerid){
+//       res.json(data[0].player2word)
+//     }
+//   })
+//   .catch(err => {
+//     console.error(`Error in getMatch: ${err}`)
+//     res.sendStatus(500)
+//   })
+// }
 module.exports = {
   getAllMatchesAsInitiator,
   getAllMatchesAsResponder,
@@ -118,4 +137,5 @@ module.exports = {
   getAllMatches,
   getAllMatches2,
   getAllMatches3,
+  // getMatch
 }

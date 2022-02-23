@@ -6,6 +6,7 @@ function getAllTries(req, res) {
   knex('fr_tries')
     .where('playerid', playerid)
     .andWhere('matchid', matchid)
+    .orderBy('triesid')
     .then(data => {
       res.json(data)
     })
@@ -20,7 +21,7 @@ function addTry(req, res) {
   let atry = req.body.try
 
   knex('fr_tries')
-    .insert({ playerid, matchid, 'try': atry, 'triedon': 'now' })
+    .insert({ playerid, matchid, 'try': atry })
     .returning('triesid')
     .then(data => {
       res.json(data)
@@ -74,7 +75,7 @@ function makeAGuess(req, res) {
       res.json(result)
       //do additional processing. Enter the guess in the tries table
       knex('fr_tries')
-      .insert({playerid,matchid,'try':guess})
+      .insert({playerid,matchid,'try':guess,result})
       .returning('triesid')
       .then(data=>{
         console.log(JSON.stringify(data))
