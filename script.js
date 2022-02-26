@@ -4,54 +4,76 @@ let currentCol = 1
 //set the picture, nickname and playerid as soon as the player logs in
 let picture = ''
 let nickname = ''
-let playerid = ''
+let playerid = 0
 //set the playernum as soon as a match is decided.
 let playernum = 0
+//set the matchid as soon as the match is selected
+let matchid
 import {
   getactiveGames, createUserIfNeeded,
   getcompletedGames, getTries, submitTry,
-  getUser
+  getPlayers, existsWord, getInvitations,getUser
 } from './data.js'
+
+/**
+ * Starts the authentication flow
+ */
+ const login = async () => {
+  try {
+    await auth0.loginWithRedirect({
+      redirect_uri: window.location.origin
+    });
+  } catch (err) {
+    console.log("Log in failed", err)
+  }
+};
+
+/**
+ * Executes the logout flow
+ */
+const logout = () => {
+  try {
+    console.log("Logging out");
+    auth0.logout({
+      returnTo: window.location.origin
+    });
+  } catch (err) {
+    console.log("Log out failed", err);
+  }
+};
 
 const updateactiveGames = async (playerid) => {
   const games = await getactiveGames(playerid)
-  //console.log(games)
-  const activegames = document.getElementById('activegameslist')
-  if (activegames.children.lenght > 0) {
-    activegames.children.forEach(child => {
+  console.log(`Active games:${games}`)
+  const activegameslist = document.getElementById('activegameslist')
+  if (activegameslist.children.length > 0) {
+    activegameslist.children.forEach(child => {
       child.remove()
     });
   }
 
   for (let i = 0; i < games.length; i++) {
-    let pn=0
-    if(games[i].player1id==playerid){
-      pn=1
-    }else{
-      pn=2
-    }
     let el = document.createElement('div')
-    el.innerHTML = `Match :${games[i].matchid} vs ${games[i].nickname}`
+    el.innerHTML = `Match :${games[i].matchid} vs ${games[i].opponent}`
     el.setAttribute('data-matchid', games[i].matchid)
-    el.setAttribute('data-playernum', pn)
     el.classList.add('activegame')
     el.addEventListener('click', async e => {
       // console.log(e.target.dataset.matchid)
       //get the match data
-      let matchid = e.target.dataset.matchid
-      playernum = e.target.dataset.playernum
+      document.getElementById('onlyinputs').style="visibility:visible"
+      matchid = e.target.dataset.matchid
       const tries = await getTries(matchid, playerid)
-      console.log(JSON.stringify(tries))
+      //console.log(JSON.stringify(tries))
       for (let atry = 0; atry < tries.length; atry++) {
-        console.log(tries[atry].result)
-        console.log(typeof (tries[atry].result))
+        // console.log(tries[atry].result)
+        // console.log(typeof (tries[atry].result))
         let row = document.querySelector(`#row${atry + 1}`)
         let wordArray = tries[atry].try.split('')
         for (let ch = 0; ch < wordArray.length; ch++) {
           //identify the column
           row.childNodes[ch].value = wordArray[ch]
           if (tries[atry].result != null) {
-            console.log(tries[atry].result[ch])
+            // console.log(tries[atry].result[ch])
             row.childNodes[ch].classList.add(`t${tries[atry].result[ch]}`)
           }
         }
@@ -59,7 +81,7 @@ const updateactiveGames = async (playerid) => {
       currentRow = tries.length+1
       updateActiveCell()
     })
-    activegames.append(el)
+    activegameslist.append(el)
   }
 
 }
@@ -77,19 +99,66 @@ const updatecompletedGames = async (playerid) => {
 
   for (let i = 0; i < games.length; i++) {
     let el = document.createElement('div')
-    el.innerHTML = `Match :${games[i].matchid} vs ${games[i].nickname}`
+    //decide on text
+    let txt=''
+    if(games[i].mytrynumber<games[i].opptrynumber){
+      txt=`Match# ${games[i].matchid} You won: ${games[i].mytrynumber} vs ${games[i].opponent}'s ${games[i].opptrynumber}`
+    }else if(games[i].mytrynumber>games[i].opptrynumber){
+      txt=`Match# ${games[i].matchid} You lost: ${games[i].mytrynumber} vs ${games[i].opponent}'s ${games[i].opptrynumber}`
+    }else{
+      txt=`Match# ${games[i].matchid} You drew: ${games[i].mytrynumber} vs ${games[i].opponent}'s ${games[i].opptrynumber}`
+    }
+
+    el.innerHTML = txt
     completedgames.append(el)
   }
 
+}
+const updatePlayersList = async (playerid) => {
+  const plrs = await getPlayers(playerid)
+  //console.log(plrs)
+  const playerslist = document.getElementById('playerslist')
+
+  if (playerslist.children.length > 0) {
+    playerslist.children.forEach(child => {
+      child.remove()
+    });
+  }
+
+  for (let i = 0; i < plrs.length; i++) {
+    let el = document.createElement('div')
+    el.innerHTML = `${plrs[i].nickname}`
+    el.setAttribute('data-playerid',plrs[i].playerid)
+    playerslist.append(el)
+  }
+
+}
+const updateInvitationsList = async(playerid)=>{
+  const plrs = await getInvitations(playerid)
+  //console.log(plrs)
+  const invitationslist = document.getElementById('invitationslist')
+
+  if (invitationslist.children.length > 0) {
+    invitationslist.children.forEach(child => {
+      child.remove()
+    });
+  }
+
+  for (let i = 0; i < plrs.length; i++) {
+    let el = document.createElement('div')
+    el.innerHTML = `${plrs[i].nickname}`
+    el.setAttribute('data-playerid',plrs[i].fromplayer)
+    invitationslist.append(el)
+  }  
 }
 
 let kb_buttons = document.querySelectorAll('.key-row button')
 // console.log(kb_buttons)
 kb_buttons = [...kb_buttons]
-let row = document.getElementById(`row${currentRow}`)
 for (let i = 0; i < kb_buttons.length; i++) {
   let kb_button = kb_buttons[i]
   kb_button.addEventListener('click', (e) => {
+    let row = document.getElementById(`row${currentRow}`)
     switch (e.target.innerText) {
       case 'ENTER':
         //submit the currentRow and move to the next row
@@ -97,8 +166,8 @@ for (let i = 0; i < kb_buttons.length; i++) {
         for(let ch=0;ch<row.childNodes.length;ch++){
           guess+=row.childNodes[ch].value
         }
-        console.log(matchid,playerid,playernum,guess)
-        submitTry(matchid,playerid,playernum,guess)
+        console.log(matchid,playerid,guess,currentRow)
+        submitTry(matchid,playerid,guess,currentRow)
         break;
       case 'BACK':
 
@@ -116,12 +185,44 @@ for (let i = 0; i < kb_buttons.length; i++) {
   })
 }
 window.addEventListener('load', async () => {
+  document.getElementById('btn-login').addEventListener('click',login)
+  document.getElementById('btn-logout').addEventListener('click',logout)
+  document.getElementById('btn-invite').addEventListener('click',()=>{
+    let playerid = document.querySelector('.selectedopponent').dataset.playerid
+    let word = document.querySelector('#challengeword').innerText
+    console.log(playerid,word)
+  })
   document.getElementById('background').addEventListener('click', () => {
-    debugger
-    // console.log(`Clicked on background element`)
     document.getElementById('backgroundinfo').classList.toggle('hidden')
   })
+  document.getElementById('challengeword').addEventListener('keyup', async e=>{
+    console.log(`Challenge word: ${e.target.value}`)
+      if(e.target.value.length!=5){
+        e.target.classList.add('invalid')
+        document.querySelector('#btn-invite').setAttribute('disabled',true)
+        return
+      }
+    let status = await existsWord(e.target.value)
+    console.log(`Challenge word exists:${status}`)
+    if(status==200){
+      e.target.classList.remove('invalid')
+      document.querySelector('#btn-invite').removeAttribute('disabled')
+    }else{
+      e.target.classList.add('invalid')
+      document.querySelector('#btn-invite').setAttribute('disabled',true)
+    }
+  })
+  document.getElementById('playerslist').addEventListener('click', e=>{
+    let opponentsArray = [...document.querySelectorAll("#playerslist>div")]
+    opponentsArray.forEach(element => element.classList.remove('selectedopponent'))
+    e.target.classList.add('selectedopponent')  
+    document.getElementById("invitationmessage").innerText=`Word for ${e.target.innerText}`
+    console.log(e.target)
+  });
   document.addEventListener('keydown', (e) => {
+    if(e.target==document.getElementById('challengeword')){
+      return
+    }
     e.preventDefault()
     let key = e.key.toUpperCase()
     console.log(e.key)
@@ -209,14 +310,18 @@ const updateUI = async () => {
   document.getElementById(`btn-logout`).disabled = !isAuthenticated
   document.getElementById(`btn-login`).disabled = isAuthenticated
   let user = await auth0.getUser()
-
-  playerid = await createUserIfNeeded(user.name, user.nickname)
-  nickname = user.nickname
-  console.log(JSON.stringify(playerid))
-  updateactiveGames(playerid)
-  updatecompletedGames(playerid)
-  updateActiveCell()
-
+  if(user){
+    console.log(JSON.stringify(user))
+    playerid = await createUserIfNeeded(user.name, user.nickname)
+    nickname = user.nickname
+    // console.log(JSON.stringify(playerid))
+    updateactiveGames(playerid)
+    updatecompletedGames(playerid)
+    updatePlayersList(playerid)
+    updateInvitationsList(playerid)
+    updateActiveCell()
+    document.querySelector('#title span').innerText=`${nickname}'s Murdle`
+  }
 }
 
 const updateActiveCell = () => {
@@ -233,32 +338,9 @@ const updateActiveCell = () => {
   input.focus()
 }
 
-/**
- * Starts the authentication flow
- */
-const login = async () => {
-  try {
-    await auth0.loginWithRedirect({
-      redirect_uri: window.location.origin
-    });
-  } catch (err) {
-    console.log("Log in failed", err)
-  }
-};
-
-/**
- * Executes the logout flow
- */
-const logout = () => {
-  try {
-    console.log("Logging out");
-    auth0.logout({
-      returnTo: window.location.origin
-    });
-  } catch (err) {
-    console.log("Log out failed", err);
-  }
-};
+/*
+Original location of login and logout functions
+*/
 
 /**
  * Retrieves the auth configuration from the server

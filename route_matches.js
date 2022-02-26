@@ -1,45 +1,19 @@
 const { json } = require('express/lib/response')
 const knex = require('./dbservice')
 
-function getAllMatchesAsInitiator(req, res) {
-  let playerid = req.params.playerid
-  knex('fr_matches')
-  .where('player1id',playerid)
-  .then(data => {
-    res.json(data)
-  })
-  .catch(err => {
-    console.error(`Error in getAllMatchesAsInitiator: ${err}`)
-    res.sendStatus(500)
-  })
-}
-function getAllMatchesAsResponder(req, res) {
-  let playerid = req.params.playerid
-  knex('fr_matches')
-  .where('player2id',playerid)
-  .then(data => {
-    res.json(data)
-  })
-  .catch(err => {
-    console.error(`Error in getAllMatchesAsResponder: ${err}`)
-    res.sendStatus(500)
-  })
-}
 function updatePlayerWord(req,res){
   let matchid = req.params.matchid
-  let playernum = req.params.playernum
   let playerid = req.params.playerid
-  let opponentnum = playernum==1?2:1
   let word = req.params.word
-  knex('fr_matches')
+  knex('fr_match_details')
   .where('matchid',matchid)
-  .andWhere(`player${playernum}id`,playerid)
-  .update(`player${opponentnum}word`,word)
+  .andWhere(`playerid`,playerid)
+  .update(`playerword`,word)
   .then(() => {
     res.sendStatus(200)
   })
   .catch(err => {
-    console.error(`Error in getAllMatchesAsResponder: ${err}`)
+    console.error(`Error in updatePlayerWord: ${err}`)
     res.sendStatus(500)
   })
 }
@@ -68,46 +42,45 @@ function getAllMatches(req, res) {
   })
 }
 
-function getAllMatches2(req, res) {
+function getAllActiveMatches(req, res) {
   let playerid = req.params.playerid
-  //console.log(`In getAllMatches2, playerid:${playerid}`)
-  knex.raw(`
-    select matches1.*,fr_players.nickname from fr_matches as matches1  
-    inner join fr_players on matches1.player2id = fr_players.playerid 
-    where player1id = ? and not (matches1.player1done = true)
-    union
-    select matches2.*,fr_players.nickname  from fr_matches as matches2 
-    inner join fr_players on matches2.player1id = fr_players.playerid
-    where player2id = ? and not (matches2.player2done = true)
-  `,[playerid,playerid])
-  //.on('query',(q)=>console.log(q.sql))
+  //console.log(`In getAllActiveMatches, playerid:${playerid}`)
+  knex('fr_match_details as myMatch')
+  .innerJoin('fr_match_details as oppMatch',{'myMatch.matchid':'oppMatch.matchid'})
+  .innerJoin('fr_players',{'oppMatch.playerid':'fr_players.playerid'})
+  .where('myMatch.playerdone',false)
+  .andWhere('myMatch.playerid',playerid)
+  .andWhere(knex.raw(`"myMatch"."matchdetailsid" <> "oppMatch"."matchdetailsid"`))
+  .select('myMatch.*','oppMatch.*','nickname as opponent')
+  // .on('query',(q)=>console.log(q.sql))
   .then(data=>{
-    res.json(data.rows)
+    console.log(JSON.stringify(data))
+    res.json(data)
   })
   .catch(err=>{
-    console.error(`Error in getAllMatches: ${err}`)
+    console.error(`Error in getAllActiveMatches: ${err}`)
     res.sendStatus(500)  
   })
 }
 
-function getAllMatches3(req, res) {
+function getAllCompletedMatches(req, res) {
   let playerid = req.params.playerid
-  // console.log(`In getAllMatches3, playerid:${playerid}`)
-  knex.raw(`
-    select matches1.*,fr_players.nickname from fr_matches as matches1  
-    inner join fr_players on matches1.player2id = fr_players.playerid 
-    where player1id = ? and (matches1.player1done = true)
-    union
-    select matches2.*,fr_players.nickname  from fr_matches as matches2 
-    inner join fr_players on matches2.player1id = fr_players.playerid
-    where player2id = ? and (matches2.player2done = true)
-  `,[playerid,playerid])
-  // .on('query',(q)=>console.log(q.sql))
+  // console.log(`In getAllCompletedMatches, playerid:${playerid}`)
+  knex('fr_matches')
+  .select('myMatch.matchid as matchid','myMatch.trynumber as mytrynumber','oppMatch.trynumber as opptrynumber','nickname')
+  .innerJoin('fr_match_details as myMatch',{'fr_matches.matchid':'myMatch.matchid'})
+  .innerJoin('fr_match_details as oppMatch',{'fr_matches.matchid':'oppMatch.matchid'})
+  .innerJoin('fr_players',{'fr_players.playerid':'oppMatch.playerid'})
+  .where('myMatch.playerid',playerid)
+  .andWhere('myMatch.playerdone',true)
+  .andWhere('oppMatch.playerdone',true)
+  .andWhere(knex.raw(`"myMatch"."matchdetailsid" <> "oppMatch"."matchdetailsid"`))
+  // .on('query',q=>console.log(q.sql))
   .then(data=>{
-    res.json(data.rows)
+    res.json(data)
   })
   .catch(err=>{
-    console.error(`Error in getAllMatches: ${err}`)
+    console.error(`Error in getAllCompletedMatches: ${err}`)
     res.sendStatus(500)  
   })
 }
@@ -131,11 +104,9 @@ function getAllMatches3(req, res) {
 //   })
 // }
 module.exports = {
-  getAllMatchesAsInitiator,
-  getAllMatchesAsResponder,
   updatePlayerWord,
   getAllMatches,
-  getAllMatches2,
-  getAllMatches3,
+  getAllActiveMatches,
+  getAllCompletedMatches,
   // getMatch
 }

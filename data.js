@@ -50,6 +50,7 @@ async function createUserIfNeeded(email, nickname) {
       return json[0].playerid
     } else {
       //user exists
+      // console.log(`createUserIfNeeded: ${users[0].playerid}`)
       return users[0].playerid
     }
   } catch (err) {
@@ -67,7 +68,18 @@ async function getTries(matchid,playerid){
     new Error(`Error in getTries`)
   }
 }
-async function submitTry(matchid,playerid,playernum,atry){
+async function getPlayers(playerid){
+  // console.log(`Player id being sent to /api/users/other/${playerid}`)
+  try {
+    const response = await fetch(`/api/users/other/${playerid}`)
+    const json = response.json()
+    return json
+  } catch (err) {
+    console.log(`Error in getPlayers`)
+    new Error(`Error in getPlayers`)
+  }
+}
+async function submitTry(matchid,playerid,atry,trynumber){
   try {
     
       const response = await fetch({
@@ -76,7 +88,7 @@ async function submitTry(matchid,playerid,playernum,atry){
         body: {
           matchid:matchid,
           playerid:playerid,
-          playernum:playernum,
+          trynumber:trynumber,
           guess:atry
         }  
       })
@@ -88,11 +100,41 @@ async function submitTry(matchid,playerid,playernum,atry){
     new Error(`Error in submitTry`)
   }
 }
+async function existsWord(word){
+  // console.log(`Player id being sent to /api/users/other/${playerid}`)
+  try {
+    const response = await fetch(`/api/exists/${word}`)
+    const json = response.json()
+    //console.log(`json.status:${json.status}`)
+    console.log(`response.status:${response.status}`)
+    return response.status
+  } catch (err) {
+    console.log(`Error in existsWord`)
+    new Error(`Error in existsWord`)
+  }
+}
+async function sendAnOffer(myid,opponentid,word){
+
+}
+async function getInvitations(playerid){
+  try {
+    const response = await fetch(`/api/api/offers/${playerid}`)
+    const json = response.json()
+    return json
+  } catch (err) {
+    console.log(`Error in getInvitations`)
+    new Error(`Error in getInvitations`)
+  }  
+}
 export {
   getactiveGames,
   getcompletedGames,
   getUser,
   createUserIfNeeded,
   getTries,
-  submitTry
+  submitTry,
+  getPlayers,
+  existsWord,
+  sendAnOffer,
+  getInvitations
 }

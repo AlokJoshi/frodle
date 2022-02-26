@@ -1,10 +1,12 @@
 const knex = require('./dbservice')
 
 function getAllOffers(req, res) {
+  //returns only those offers that have not been accepted
   let playerid = req.params.playerid
   console.log(`In getAllOffers playerid:${playerid}`)
   knex('fr_offers')
     .where('toplayer', playerid)
+    .where('acceptedon',null)
     .then(data => {
       res.json(data)
     })

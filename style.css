@@ -6,6 +6,7 @@
   font-size: 1em;
 }
 #title,#background{
+  width:100%;
   background:#020202;
   color: #e2e2e2;
   text-align: center;
@@ -18,6 +19,7 @@
 }
 #btn-login:disabled,#btn-logout:disabled{
   cursor:not-allowed;
+  color:#e2e2e2;
 }
 #backgroundinfo p:nth-of-type(even){
   background-color: beige;
@@ -26,19 +28,23 @@
   display:none;
 }
 
-input{
+#onlyinputs input{
   padding:3px;
   font-size: 40px;
   text-align: center;
   caret-color:transparent;
+  font-weight: bold;
 }
 
 #games{
   border:1px solid #e2e2e2;
   display:grid;
-  grid-template-columns: 1fr 320px 1fr;
+  grid-template-columns: 1fr 2fr 1fr;
   grid-template-rows: 400px;
   /* align-items: stretch; */
+}
+#games > div{
+  margin:10px;
 }
 .tile{
   border:1px solid #e2e2e2;
@@ -67,6 +73,7 @@ input{
 }
 
 .key-container {
+  margin-top: 100px;
   height: 200px;
 }
 .key-board{
@@ -104,9 +111,12 @@ input{
   background-color: #050505;
 }
 #onlyinputs{
-  text-align: center;
+  /* text-align: center; */
+  /* font-weight: bold; */
   row-gap:10px;
-  margin-left: 10px;
+  margin: auto;
+  visibility: hidden;
+  max-width: 290px;
 }
 .row{
   display: flex;
@@ -128,4 +138,35 @@ input{
 .t2{
   background:green;
   color:#020202;
+}
+#playersandinvitation{
+  display:grid;  
+}
+#playerslist,#activegameslist{
+  max-height: 150px;
+  overflow-y:scroll;
+  overflow-x:hidden;
+  border-bottom: 1px solid black;
+}
+#playerslist div{
+  cursor:pointer;
+}
+#challengeword{
+  width:60px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+#challengeword.invalid{
+  color:red
+}
+.selectedopponent{
+  border:1px solid blue;
+  border-radius: 2px;
+}
+#invitation{
+  text-align: center;
+}
+#invitation >*{
+  margin:2px;
+  padding:2px;
 }

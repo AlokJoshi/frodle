@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Frodle</title>
+  <title>Murdle</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,9 +14,9 @@
 
 <body>
   <div id="title">
-    <span>Frodle</span>
-    <button id="btn-login" disabled="true" onclick="login()">Log in</button>
-    <button id="btn-logout" disabled="true" onclick="logout()">Log out</button>
+    <span>Murdle</span>
+    <button id="btn-login" disabled="true">Log in</button>
+    <button id="btn-logout" disabled="true">Log out</button>
   </div>
   <div id="background">Background</div>
   <div id="backgroundinfo" class="hidden">
@@ -51,12 +51,22 @@
   </div>
   </div>
   <div id="games">
-    <div id="activegames">
-      <h2>Active Games</h2>
-      <div id="activegameslist"></div>
+    <div id="activegamesandinvitationsreceived">
+      <div id="activegames">
+        <h2>Active Games</h2>
+        <h6>(Click to play)</h6>
+        <div id="activegameslist"></div>
+      </div>
+      <div id="invitationsreceived">
+        <h2>Invitations to play</h2>  
+        <div id="invitationslist"></div>
+        <h2 id="acceptmessage">Word for</h2>
+        <input id="challengeword2" value="XXXXX" maxlength="5" minlength="5">
+        <button id="accept">Accept Invite</button>
+      </div>
     </div>
     <div id="currentgame">
-      <h2>Current Game</h2>
+      <h2 style="text-align:center;color:#e2e2e2">Current Game</h2>
       <div id="onlyinputs">
         <div id="row1" class="row"><input class="tile"><input class="tile"><input class="tile"><input
             class="tile"><input class="tile"></div>
@@ -72,9 +82,18 @@
             class="tile"><input class="tile"></div>
       </div>
     </div>
-    <div id="completedgames">
-      <h2>Completed Games</h2>
-      <div id="completedgameslist"></div>
+    <div id="playersandinvitation">
+      <div id="players">
+        <h2>Other Murdlers</h2>
+        <h6>(Click to invite)</h6>
+        <div id="playerslist"></div>
+      </div>
+      <div id="invitation">
+        <h2 id="invitationmessage">Word for</h2>
+        <input id="challengeword" value="XXXXX" maxlength="5" minlength="5">
+        <br>
+        <button id="btn-invite" disabled>Invite</button>  
+      </div>
     </div>
   </div>
   <div class="key-container">
@@ -93,7 +112,10 @@
           class="">M</button><button class="">BACK</button></div>
     </div>
   </div>
-
+  <div id="completedgames">
+    <h2>Completed Games</h2>
+    <div id="completedgameslist"></div>
+  </div>
   <!-- <div id="register">
     <h2 id="registrationheading">Register</h2>
     <br>

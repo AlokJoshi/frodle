@@ -33,9 +33,9 @@ function addTry(req, res) {
 }
 function makeAGuess(req, res) {
   let matchid = req.body.matchid
-  let playernum = req.body.playernum
   let playerid = req.body.playerid
   let guess = req.body.guess
+  let trynumber = req.body.trynumber
 
   /* 
   this will return an array
@@ -50,57 +50,61 @@ function makeAGuess(req, res) {
   */
 
   //first get the word
-  knex('fr_matches')
-    .select(`player${playernum}word`)
-    .where('matchid',matchid)
-    .where(`player${playernum}id`,playerid)
+  knex('fr_match_details')
+    .select(`playerword`)
+    .where('matchid', matchid)
+    .where(`playerid`, playerid)
     .then(data => {
-      let word = data[0][`player${playernum}word`]
+      let word = data[0][`playerword`]
       let wordArray = word.split('')
       let guessArray = guess.split('')
-      console.log(wordArray,guessArray)
+      console.log(wordArray, guessArray)
       //now we check how guess matches up to it
       let result = []
       let numCorrect = 0
-      for(let i=0;i<5;i++){
-        if(guessArray[i]==wordArray[i]){
+      for (let i = 0; i < 5; i++) {
+        if (guessArray[i] == wordArray[i]) {
           numCorrect++
           result.push(2)
-        }else if(wordArray.includes(guessArray[i])){
+        } else if (wordArray.includes(guessArray[i])) {
           result.push(1)
-        }else{
+        } else {
           result.push(0)
         }
       }
       res.json(result)
       //do additional processing. Enter the guess in the tries table
       knex('fr_tries')
-      .insert({playerid,matchid,'try':guess,result})
-      .returning('triesid')
-      .then(data=>{
-        console.log(JSON.stringify(data))
-      })
-      .catch(err=>{
-        console.log(`Error in MakeAGuess while adding a try to the tries table: ${err}`)
-      })
-      //do additional processing. Update the playerxdone to true
-      if(numCorrect==5){
-        knex.raw(`Update fr_matches set ${playernum==1?'player1done':'player2done'} = true
-                  where matchid = ?`,[matchid])
-        .on('query',q=>console.log(q.sql))
-        .then(()=>{
+        .insert({ playerid, matchid, 'try': guess, result })
+        .returning('triesid')
+        .then(data => {
           console.log(JSON.stringify(data))
+          //do additional processing. Update the playerdone to true
+          //do additional processing. Update the fr_match_details.trynumber and 
+          //fr_match_details.done 
+          knex('fr_match_details')
+          .update({ 'trynumber': trynumber , 'playerdone': numCorrect == 5 })
+          .where('matchid', matchid)
+          .andWhere('playerid', playerid)
+          .then(data=>{
+            console.log(`Updated fr_match_details with trynumber and playerdone: ${data}`)
+            //res.json(data)
+          })
+          .catch(err=>{
+            console.log(`Error in updating fr_match_details with trynumber and playerdone:${err}`)
+            //res.sendStatus(500)
+          })
         })
-        .catch(err=>{
-          console.log(`Error in MakeAGuess while updating playerxdone: ${err}`)
+        .catch(err => {
+          console.log(`Error in MakeAGuess while adding a try to the tries table: ${err}`)
+          //res.sendStatus(500)
         })
-      }
-
     })
     .catch(err => {
       console.error(`Error in makeAGuess: ${err}`)
       res.sendStatus(500)
     })
+  
 }
 
 

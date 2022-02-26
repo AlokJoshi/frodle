@@ -1,7 +1,10 @@
 const knex = require('./dbservice')
 
 function getAllUsers(req, res) {
+  //gets users other than the current user(playerid)
+  const playerid=req.params.playerid
   knex('fr_players')
+  .whereNot('playerid',playerid)
   .then(data => {
     res.json(data)
   })

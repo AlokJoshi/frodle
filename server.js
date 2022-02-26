@@ -21,18 +21,16 @@ app.get("/auth_config.json", (req, res) => {
 //using put for replacing an existing resource
 //using delete for deleting a resouce
 app.use(express.static('.'))
-app.get(`/api/users`, users.getAllUsers)
+app.get(`/api/users/other/:playerid`, users.getAllUsers)
 app.get(`/api/users/:email`, users.getUser)
 app.post(`/api/users`, users.addUser)
 app.delete(`/api/users/:playerid`, users.deleteUser)
 app.get(`/api/offers/:playerid`, offers.getAllOffers)
 app.post(`/api/offers`, offers.createAnOffer)
 app.patch(`/api/offer/accept/:offerid`, offers.acceptAnOffer)
-app.get('/api/initiatormatches/:playerid', matches.getAllMatchesAsInitiator)
-app.get('/api/respondermatches/:playerid', matches.getAllMatchesAsResponder)
-app.patch('/api/matches/:matchid/:playernum/:playerid/:word',matches.updatePlayerWord)
-app.get('/api/matches/active/:playerid',matches.getAllMatches2)
-app.get('/api/matches/completed/:playerid',matches.getAllMatches3)
+app.patch('/api/matches/:matchid/:playerid/:word',matches.updatePlayerWord)
+app.get('/api/matches/active/:playerid',matches.getAllActiveMatches)
+app.get('/api/matches/completed/:playerid',matches.getAllCompletedMatches)
 //app.get('/api/matches/:matchid/:playerid',matches.getMatch)
 app.get('/api/tries/:matchid/:playerid', tries.getAllTries)
 app.post(`/api/tries`,tries.addTry)
@@ -40,26 +38,35 @@ app.post(`/api/tries/guess`,tries.makeAGuess)
 app.get('/api/exists/:word', (req, res) => {
   let word = req.params.word
   console.log(word)
-  superagent
+  try{
+    superagent
     .get(`http://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
     .then(
       res2 => {
-        //console.log(res2)
+        console.log(`Response status: ${res2.status}`)
         if (res2.status == 200) {
-
-          console.log(res2.body);
+          console.log(`200 response status was receive and the word returned was ${res2.body[0].word}`);
           const word = res2.body[0].word
-          if (word) res.sendStatus(200)
-          else
-            res.sendStatus(500)
+          if (word) {
+            res.sendStatus(200)
+            console.log(`200 was sent to the program`)
+          }else{
+            console.log(`200 was was received but word was not found hence 202 sent to the program.`)
+            res.sendStatus(202)
+          }
+        }else{
+          res.sendStatus(202)
         }
       },
       err => {
-        console.log(err)
-        res.sendStatus(500)
+        console.log(`Error response was received from the web site: ${err}`)
+        res.sendStatus(202)
       },
-    );
-
+      )
+    }catch(err){
+    console.log(`Try resulted in an error and a 202 response sent: ${err}`)
+    res.sendStatus(202)
+  }
 })
 
 const server = app.listen(port, () => console.log(`Frodle app listening on port ${port}!`))
