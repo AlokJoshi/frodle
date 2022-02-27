@@ -93,6 +93,8 @@ async function submitTry(matchid,playerid,atry,trynumber){
         }  
       })
       const json = response.json()
+      console.log(json)
+      console.log(json[0].playerid)
       return json[0].playerid
     
   } catch (err) {
@@ -118,12 +120,22 @@ async function sendAnOffer(myid,opponentid,word){
 }
 async function getInvitations(playerid){
   try {
-    const response = await fetch(`/api/api/offers/${playerid}`)
+    const response = await fetch(`/api/offers/${playerid}`)
     const json = response.json()
     return json
   } catch (err) {
     console.log(`Error in getInvitations`)
     new Error(`Error in getInvitations`)
+  }  
+}
+async function getPendingInvitations(playerid){
+  try {
+    const response = await fetch(`/api/offers/pending/${playerid}`)
+    const json = response.json()
+    return json
+  } catch (err) {
+    console.log(`Error in getPendingInvitations`)
+    new Error(`Error in getPendingInvitations`)
   }  
 }
 export {
@@ -136,5 +148,6 @@ export {
   getPlayers,
   existsWord,
   sendAnOffer,
-  getInvitations
+  getInvitations,
+  getPendingInvitations
 }

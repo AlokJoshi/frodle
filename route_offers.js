@@ -5,6 +5,8 @@ function getAllOffers(req, res) {
   let playerid = req.params.playerid
   console.log(`In getAllOffers playerid:${playerid}`)
   knex('fr_offers')
+    .select('offerid','fromplayer','madeon','nickname')
+    .innerJoin('fr_players',{'fr_players.playerid':'fr_offers.fromplayer'})
     .where('toplayer', playerid)
     .where('acceptedon',null)
     .then(data => {
@@ -12,6 +14,25 @@ function getAllOffers(req, res) {
     })
     .catch(err => {
       console.error(`Error in getAllOffers: ${err}`)
+      res.sendStatus(500)
+    })
+}
+
+function getPendingOffers(req, res) {
+  //returns only those offers that have not been made
+  //by the player but not accepted by the opponent.
+  let playerid = req.params.playerid
+  console.log(`In getPendingOffers playerid:${playerid}`)
+  knex('fr_offers')
+    .select('offerid','toplayer','madeon','nickname')
+    .innerJoin('fr_players',{'fr_players.playerid':'fr_offers.toplayer'})
+    .where('fromplayer', playerid)
+    .where('acceptedon',null)
+    .then(data => {
+      res.json(data)
+    })
+    .catch(err => {
+      console.error(`Error in getPendingOffers: ${err}`)
       res.sendStatus(500)
     })
 }
@@ -63,6 +84,6 @@ function acceptAnOffer(req, res) {
 module.exports = {
   getAllOffers,
   createAnOffer,
-  acceptAnOffer
-
+  acceptAnOffer,
+  getPendingOffers
 }

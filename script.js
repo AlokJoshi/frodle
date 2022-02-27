@@ -12,7 +12,8 @@ let matchid
 import {
   getactiveGames, createUserIfNeeded,
   getcompletedGames, getTries, submitTry,
-  getPlayers, existsWord, getInvitations,getUser
+  getPlayers, existsWord, getInvitations,
+  getPendingInvitations, getUser
 } from './data.js'
 
 /**
@@ -44,7 +45,7 @@ const logout = () => {
 
 const updateactiveGames = async (playerid) => {
   const games = await getactiveGames(playerid)
-  console.log(`Active games:${games}`)
+  // console.log(`Active games:${games}`)
   const activegameslist = document.getElementById('activegameslist')
   if (activegameslist.children.length > 0) {
     activegameslist.children.forEach(child => {
@@ -54,7 +55,8 @@ const updateactiveGames = async (playerid) => {
 
   for (let i = 0; i < games.length; i++) {
     let el = document.createElement('div')
-    el.innerHTML = `Match :${games[i].matchid} vs ${games[i].opponent}`
+    let opponent = games[i].opponent.length>15?games[i].opponent.substring(0,12)+'...':games[i].opponent
+    el.innerHTML = `Match :${games[i].matchid} vs ${opponent}`
     el.setAttribute('data-matchid', games[i].matchid)
     el.classList.add('activegame')
     el.addEventListener('click', async e => {
@@ -127,13 +129,14 @@ const updatePlayersList = async (playerid) => {
 
   for (let i = 0; i < plrs.length; i++) {
     let el = document.createElement('div')
-    el.innerHTML = `${plrs[i].nickname}`
+    let nickname = plrs[i].nickname.length>15?plrs[i].nickname.substring(0,12)+'...':plrs[i].nickname
+    el.innerHTML = nickname
     el.setAttribute('data-playerid',plrs[i].playerid)
     playerslist.append(el)
   }
 
 }
-const updateInvitationsList = async(playerid)=>{
+const updateInvitationsList = async (playerid) => {
   const plrs = await getInvitations(playerid)
   //console.log(plrs)
   const invitationslist = document.getElementById('invitationslist')
@@ -146,9 +149,30 @@ const updateInvitationsList = async(playerid)=>{
 
   for (let i = 0; i < plrs.length; i++) {
     let el = document.createElement('div')
-    el.innerHTML = `${plrs[i].nickname}`
+    let nickname = plrs[i].nickname.length>15?plrs[i].nickname.substring(0,12)+'...':plrs[i].nickname
+    el.innerHTML = `Offer#:${plrs[i].offerid} from ${nickname}`
     el.setAttribute('data-playerid',plrs[i].fromplayer)
+    el.setAttribute('data-offerid',plrs[i].offerid)
+    el.setAttribute('data-nickname',plrs[i].nickname)
     invitationslist.append(el)
+  }  
+}
+const updatePendingInvitations = async (playerid) => {
+  const invitations = await getPendingInvitations(playerid)
+  // console.log(invitations)
+  const pendinginvitations = document.getElementById('pendinginvitations')
+
+  if (pendinginvitations.children.length > 0) {
+    pendinginvitations.children.forEach(child => {
+      child.remove()
+    });
+  }
+
+  for (let i = 0; i < invitations.length; i++) {
+    let el = document.createElement('div')
+    let nickname = invitations[i].nickname.length>15?invitations[i].nickname.substring(0,12)+'...':invitations[i].nickname
+    el.innerHTML = `Offer#:${invitations[i].offerid} to ${nickname}`
+    pendinginvitations.append(el)
   }  
 }
 
@@ -212,6 +236,31 @@ window.addEventListener('load', async () => {
       document.querySelector('#btn-invite').setAttribute('disabled',true)
     }
   })
+  document.getElementById('challengeword2').addEventListener('keyup', async e=>{
+    console.log(`Challenge word2: ${e.target.value}`)
+      if(e.target.value.length!=5){
+        e.target.classList.add('invalid')
+        document.querySelector('#btn-accept').setAttribute('disabled',true)
+        return
+      }
+    let status = await existsWord(e.target.value)
+    console.log(`Challenge word exists:${status}`)
+    if(status==200){
+      e.target.classList.remove('invalid')
+      document.querySelector('#btn-accept').removeAttribute('disabled')
+    }else{
+      e.target.classList.add('invalid')
+      document.querySelector('#btn-accept').setAttribute('disabled',true)
+    }
+  })
+  document.getElementById('invitationslist').addEventListener('click', e=>{
+    let invitationsArray = [...document.querySelectorAll("#invitationslist>div")]
+    let nickname = e.target.dataset.nickname.length>15?e.target.dataset.nickname.substring(0,12)+'...':e.target.dataset.nickname
+    invitationsArray.forEach(element => element.classList.remove('selectedinvitation'))
+    e.target.classList.add('selectedinvitation')  
+    document.getElementById("acceptancemessage").innerText=`Word for offer#: ${e.target.dataset.offerid} from ${nickname}`
+    console.log(e.target)
+  });
   document.getElementById('playerslist').addEventListener('click', e=>{
     let opponentsArray = [...document.querySelectorAll("#playerslist>div")]
     opponentsArray.forEach(element => element.classList.remove('selectedopponent'))
@@ -220,7 +269,8 @@ window.addEventListener('load', async () => {
     console.log(e.target)
   });
   document.addEventListener('keydown', (e) => {
-    if(e.target==document.getElementById('challengeword')){
+    if(e.target==document.getElementById('challengeword') || 
+    e.target==document.getElementById('challengeword2')){
       return
     }
     e.preventDefault()
@@ -311,14 +361,14 @@ const updateUI = async () => {
   document.getElementById(`btn-login`).disabled = isAuthenticated
   let user = await auth0.getUser()
   if(user){
-    console.log(JSON.stringify(user))
+    // console.log(JSON.stringify(user))
     playerid = await createUserIfNeeded(user.name, user.nickname)
     nickname = user.nickname
-    // console.log(JSON.stringify(playerid))
     updateactiveGames(playerid)
     updatecompletedGames(playerid)
     updatePlayersList(playerid)
     updateInvitationsList(playerid)
+    updatePendingInvitations(playerid)
     updateActiveCell()
     document.querySelector('#title span').innerText=`${nickname}'s Murdle`
   }

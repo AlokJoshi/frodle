@@ -144,6 +144,13 @@
 }
 #playerslist,#activegameslist{
   max-height: 150px;
+  min-height: 150px;
+  overflow-y:scroll;
+  overflow-x:hidden;
+  border-bottom: 1px solid black;
+}
+#pendinginvitations,#invitationslist{
+  max-height: 70px;
   overflow-y:scroll;
   overflow-x:hidden;
   border-bottom: 1px solid black;
@@ -151,22 +158,22 @@
 #playerslist div{
   cursor:pointer;
 }
-#challengeword{
+#invitationslist div{
+  cursor:pointer;
+}
+#challengeword,#challengeword2{
   width:60px;
   font-weight: bold;
   text-transform: uppercase;
 }
-#challengeword.invalid{
+.invalid{
   color:red
 }
-.selectedopponent{
+.selectedopponent,.selectedinvitation{
   border:1px solid blue;
   border-radius: 2px;
 }
-#invitation{
-  text-align: center;
-}
-#invitation >*{
+#invitation > *,#invitationsreceived > *{
   margin:2px;
   padding:2px;
 }
