@@ -38,11 +38,13 @@ function getPendingOffers(req, res) {
 }
 
 function createAnOffer(req, res) {
+  console.log(req.body)
   let fromplayer = req.body.fromplayer
   let toplayer = req.body.toplayer
-  console.log(`In createAnOffer fromplayer:${fromplayer} toplayer:${toplayer}`)
+  let wordoffer = req.body.wordoffer
+  console.log(`In createAnOffer fromplayer:${fromplayer} toplayer:${toplayer} ${wordoffer}`)
   knex('fr_offers')
-    .insert({ fromplayer, toplayer })
+    .insert({ fromplayer, toplayer, wordoffer })
     .returning('offerid')
     .then((data) => {
       res.json(data)
@@ -54,24 +56,57 @@ function createAnOffer(req, res) {
 }
 
 function acceptAnOffer(req, res) {
-  let offerid = req.params.offerid
-  console.log(`In acceptAnOffer offerid:${offerid}`)
+  let offerid = req.body.offerid
+  let playerid = req.body.playerid
+  let wordaccept = req.body.wordaccept
+  console.log(`In acceptAnOffer offerid:${offerid}, playerid:${playerid}, wordaccept:${wordaccept}`)
   knex('fr_offers')
     .where('offerid', offerid)
-    .update({ 'acceptedon': 'now' })
-    .returning(['offerid', 'fromplayer', 'toplayer'])
+    .update({ 'acceptedon': 'now','wordaccept' : wordaccept })
+    .returning(['offerid', 'fromplayer', 'toplayer','wordoffer','wordaccept'])
     .then((data) => {
       console.log(`data returned in acceptAnOffer: ${JSON.stringify(data)}`)
+      let offerid=data[0].offerid
+      let fromplayer=data[0].fromplayer
+      let toplayer=data[0].toplayer
+      let wordoffer=data[0].wordoffer
+      let wordaccept=data[0].wordaccept
+
+      //first add a match in the fr_matches table
       knex('fr_matches')
-        .insert({'offerid':data[0].offerid, 'player1id':data[0].fromplayer, 'player2id':data[0].toplayer })
-        .returning('matchid')
+      .insert({'done':false,'offerid':offerid})
+      .returning('matchid')
+      .then(data=>{
+        let matchid = data[0].matchid
+        console.log(`Matchid returned after adding a match:${matchid}`)
+        knex('fr_match_details')
+        .insert({'matchid':matchid, 
+                 'playerid':toplayer, 
+                 'playerword':wordoffer})
         .then(data => {
-          res.json(data)
+          console.log(`added player who accepted`)
+          knex('fr_match_details')
+          .insert({'matchid':matchid, 
+                  'playerid':fromplayer, 
+                  'playerword':wordaccept})
+          .then(data => {
+            console.log(`added player who offered`)
+            res.sendStatus(200)
+          })
+          .catch(err=>{
+            console.error(`Error in inserting into fr_match_details for second player: ${err}`)
+            res.sendStatus(500)            
+          })
         })
         .catch(err => {
-          console.error(`Error in inserting into matches: ${err}`)
+          console.error(`Error in inserting into fr_match_details for first player: ${err}`)
           res.sendStatus(500)
         })
+
+      })
+      .catch(err=>{
+        console.log(`Error in adding a record in fr_matches: ${err}`)
+      })
     })
     .catch(err => {
       console.error(`Error in acceptAnOffer: ${err}`)

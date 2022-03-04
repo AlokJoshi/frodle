@@ -27,8 +27,8 @@ app.post(`/api/users`, users.addUser)
 app.delete(`/api/users/:playerid`, users.deleteUser)
 app.get(`/api/offers/:playerid`, offers.getAllOffers)
 app.get(`/api/offers/pending/:playerid`, offers.getPendingOffers)
-app.post(`/api/offers`, offers.createAnOffer)
-app.patch(`/api/offer/accept/:offerid`, offers.acceptAnOffer)
+app.post(`/api/createoffer`, offers.createAnOffer)
+app.put(`/api/acceptoffer`, offers.acceptAnOffer)
 app.patch('/api/matches/:matchid/:playerid/:word',matches.updatePlayerWord)
 app.get('/api/matches/active/:playerid',matches.getAllActiveMatches)
 app.get('/api/matches/completed/:playerid',matches.getAllCompletedMatches)
@@ -58,6 +58,7 @@ app.get('/api/exists/:word', (req, res) => {
         }else{
           res.sendStatus(202)
         }
+        console.log(`Finished checking word validity`)
       },
       err => {
         console.log(`Error response was received from the web site: ${err}`)

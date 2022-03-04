@@ -39,12 +39,12 @@ async function createUserIfNeeded(email, nickname) {
     if (users.length == 0) {
       //user does not exist
       const response = await fetch({
-        method:'POST',
+        method: 'POST',
         url: `api/users`,
         body: {
-          email:email,
-          nickname:nickname
-        }  
+          email: email,
+          nickname: nickname
+        }
       })
       const json = response.json()
       return json[0].playerid
@@ -58,17 +58,17 @@ async function createUserIfNeeded(email, nickname) {
     new Error(`Error in createUserIfNeeded`)
   }
 }
-async function getTries(matchid,playerid){
+async function getTries(matchid, playerid) {
   try {
     const response = await fetch(`/api/tries/${matchid}/${playerid}`)
-    const json = response.json()
+    const json = await response.json()
     return json
   } catch (err) {
     console.log(`Error in getTries`)
     new Error(`Error in getTries`)
   }
 }
-async function getPlayers(playerid){
+async function getPlayers(playerid) {
   // console.log(`Player id being sent to /api/users/other/${playerid}`)
   try {
     const response = await fetch(`/api/users/other/${playerid}`)
@@ -79,34 +79,34 @@ async function getPlayers(playerid){
     new Error(`Error in getPlayers`)
   }
 }
-async function submitTry(matchid,playerid,atry,trynumber){
+async function submitTry(matchid, playerid, atry, trynumber) {
   try {
-    
-      const response = await fetch({
-        method:'POST',
-        url: `/api/tries/guess`,
-        body: {
-          matchid:matchid,
-          playerid:playerid,
-          trynumber:trynumber,
-          guess:atry
-        }  
+
+    const response = await fetch(`/api/tries/guess`,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        matchid: matchid,
+        playerid: playerid,
+        trynumber: trynumber,
+        guess: atry
       })
-      const json = response.json()
-      console.log(json)
-      console.log(json[0].playerid)
-      return json[0].playerid
-    
+    })
+    const json = await response.json()
+    return json[0]
+
   } catch (err) {
     console.log(`Error in submitTry`)
     new Error(`Error in submitTry`)
   }
 }
-async function existsWord(word){
+async function existsWord(word) {
   // console.log(`Player id being sent to /api/users/other/${playerid}`)
   try {
     const response = await fetch(`/api/exists/${word}`)
-    const json = response.json()
+    //const json = response.json()
     //console.log(`json.status:${json.status}`)
     console.log(`response.status:${response.status}`)
     return response.status
@@ -115,10 +115,52 @@ async function existsWord(word){
     new Error(`Error in existsWord`)
   }
 }
-async function sendAnOffer(myid,opponentid,word){
+async function sendAnOffer(fromplayer, toplayer, wordoffer) {
+  console.log(fromplayer, toplayer, wordoffer)
+  try {
+    const response = await fetch('/api/createoffer', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        fromplayer: fromplayer,
+        toplayer: toplayer,
+        wordoffer: wordoffer
+      })
+    })
+    const json = await response.json()
+    return json
 
+  } catch (err) {
+    console.log(`Error in sendAnOffer`)
+    new Error(`Error in sendAnOffer`)
+  }
 }
-async function getInvitations(playerid){
+async function acceptAnOffer(playerid, offerid, wordaccept) {
+  console.log(playerid, offerid, wordaccept)
+  try {
+    const response = await fetch('/api/acceptoffer', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        playerid: playerid,
+        offerid: offerid,
+        wordaccept: wordaccept
+      })
+    })
+    // const json = await response.json()
+    // return json
+    return response.status == 200
+
+  } catch (err) {
+    console.log(`Error in acceptAnOffer`)
+    new Error(`Error in acceptAnOffer`)
+  }
+}
+async function getInvitations(playerid) {
   try {
     const response = await fetch(`/api/offers/${playerid}`)
     const json = response.json()
@@ -126,9 +168,9 @@ async function getInvitations(playerid){
   } catch (err) {
     console.log(`Error in getInvitations`)
     new Error(`Error in getInvitations`)
-  }  
+  }
 }
-async function getPendingInvitations(playerid){
+async function getPendingInvitations(playerid) {
   try {
     const response = await fetch(`/api/offers/pending/${playerid}`)
     const json = response.json()
@@ -136,7 +178,7 @@ async function getPendingInvitations(playerid){
   } catch (err) {
     console.log(`Error in getPendingInvitations`)
     new Error(`Error in getPendingInvitations`)
-  }  
+  }
 }
 export {
   getactiveGames,
@@ -149,5 +191,6 @@ export {
   existsWord,
   sendAnOffer,
   getInvitations,
-  getPendingInvitations
+  getPendingInvitations,
+  acceptAnOffer
 }
