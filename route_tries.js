@@ -1,3 +1,4 @@
+const { isObject } = require('superagent/lib/utils')
 const knex = require('./dbservice')
 
 function getAllTries(req, res) {
@@ -36,7 +37,7 @@ function makeAGuess(req, res) {
   let playerid = req.body.playerid
   let guess = req.body.guess
   let trynumber = req.body.trynumber
-
+  let opponentid = req.body.opponentid
   /* 
   this will return an array
   [%,%,%,%,%]
@@ -55,6 +56,7 @@ function makeAGuess(req, res) {
     .where('matchid', matchid)
     .where(`playerid`, playerid)
     .then(data => {
+
       let word = data[0][`playerword`]
       let wordArray = word.split('')
       let guessArray = guess.split('')
@@ -72,7 +74,6 @@ function makeAGuess(req, res) {
           result.push(0)
         }
       }
-      res.json(result)
       //do additional processing. Enter the guess in the tries table
       knex('fr_tries')
         .insert({ playerid, matchid, 'try': guess, result })
@@ -83,28 +84,62 @@ function makeAGuess(req, res) {
           //do additional processing. Update the fr_match_details.trynumber and 
           //fr_match_details.done 
           knex('fr_match_details')
-          .update({ 'trynumber': trynumber , 'playerdone': numCorrect == 5 })
+          .update({ 'trynumber': trynumber, 'playerdone': numCorrect == 5 })
           .where('matchid', matchid)
           .andWhere('playerid', playerid)
-          .then(data=>{
-            console.log(`Updated fr_match_details with trynumber and playerdone: ${data}`)
-            //res.json(data)
+          .then(data => {
+            console.log(`Updated fr_match_details for matchid: ${matchid} and playerid: ${playerid}`)
+            res.json(result)
+            //if the num correct is 5 or if trynumber is 6 then we may have to evaluate
+            //if the match is over and if it is we have to send a special message
+            //to both the players
+            let playerfailedtocompete=(trynumber==6 && numCorrect<5)
+            if(playerfailedtocompete || numCorrect == 5){
+              //check opponent status
+              knex('fr_match_details')
+              .where('matchid',matchid)
+              .andWhere('playerid',opponentid)
+              .select('trynumber','playerdone')
+              .then(data => {
+                let opptrynumber=data[0].trynumber
+                let oppdone = data[0].playerdone
+                if(playerfailedtocompete && (opptrynumber==6 && !oppdone)){
+                  //it is draw
+                  console.log(`emit a results message with draw: both players could not do it`)
+                }else if((numCorrect == 5) && oppdone){
+                  //both players have finished
+                  console.log(`emit a results message with draw:`)
+                  if(trynumber<opptrynumber){
+                    //player has won
+                  }else if(trynumber>opptrynumber){
+                    //opponent has won
+                  }else{
+                    //it is a draw
+                    console.log(`emit a results message with draw`)
+                  }
+                }else if((numCorrect==5) && ((opptrynumber==6) && !oppdone)){
+                  //opponent waas not able to complete in 6 tries while player was
+                  //player has won
+                }else if (oppdone && ((trynumber==6) && numCorrect<5)){
+                  //player has won
+                }
+              })
+            }
           })
-          .catch(err=>{
+          .catch(err => {
             console.log(`Error in updating fr_match_details with trynumber and playerdone:${err}`)
-            //res.sendStatus(500)
+            res.sendStatus(500)
           })
         })
         .catch(err => {
           console.log(`Error in MakeAGuess while adding a try to the tries table: ${err}`)
-          //res.sendStatus(500)
+          res.sendStatus(500)
         })
-    })
+      })
     .catch(err => {
       console.error(`Error in makeAGuess: ${err}`)
       res.sendStatus(500)
     })
-  
 }
 
 
