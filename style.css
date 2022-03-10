@@ -177,3 +177,16 @@
   margin:2px;
   padding:2px;
 }
+#results{
+  position:absolute;
+  text-align: center;
+  top:50%;
+  left:50%;
+  transform: translate(-50%,-50%);
+  border:2px solid green;
+  background-color:#020202;
+  color: #e2e2e2;
+  z-index: 100;
+  padding: 10px;
+  display:none;
+}

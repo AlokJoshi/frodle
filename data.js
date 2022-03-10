@@ -36,26 +36,30 @@ async function createUserIfNeeded(email, nickname) {
 
   try {
     let users = await getUser(email)
+    console.log(`users returned by createUserIfNeeded:${JSON.stringify(users)}`)
     if (users.length == 0) {
       //user does not exist
-      const response = await fetch({
+      const response = await fetch(`api/users`,{
         method: 'POST',
-        url: `api/users`,
-        body: {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
           email: email,
           nickname: nickname
-        }
+        })
       })
-      const json = response.json()
+      const json = await response.json()
+      console.log(`json returned when a new user is added:${json}`)
       return json[0].playerid
     } else {
       //user exists
-      // console.log(`createUserIfNeeded: ${users[0].playerid}`)
+      console.log(`when user exists in createUserIfNeeded: ${JSON.stringify(users)}`)
       return users[0].playerid
     }
   } catch (err) {
-    console.log(`Error in createUserIfNeeded`)
-    new Error(`Error in createUserIfNeeded`)
+    console.log(`Error in createUserIfNeeded:${err}`)
+    //new Error(`Error in createUserIfNeeded`)
   }
 }
 async function getTries(matchid, playerid) {
@@ -79,7 +83,7 @@ async function getPlayers(playerid) {
     new Error(`Error in getPlayers`)
   }
 }
-async function submitTry(matchid, playerid, atry, trynumber) {
+async function submitTry(matchid, playerid, atry, trynumber,opponentid) {
   try {
 
     const response = await fetch(`/api/tries/guess`,{
@@ -91,7 +95,8 @@ async function submitTry(matchid, playerid, atry, trynumber) {
         matchid: matchid,
         playerid: playerid,
         trynumber: trynumber,
-        guess: atry
+        guess: atry,
+        opponentid: opponentid
       })
     })
     const json = await response.json()

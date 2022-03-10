@@ -1,4 +1,5 @@
 const express = require('express')
+const socket = require('socket.io')
 const path = require('path')
 const superagent = require('superagent')
 const users = require('./route_user')
@@ -72,3 +73,22 @@ app.get('/api/exists/:word', (req, res) => {
 })
 
 const server = app.listen(port, () => console.log(`Frodle app listening on port ${port}!`))
+const io = socket(server)
+io.on('connection',(socket)=>{
+  console.log('a user connected');
+  socket.on('MSG_MOVED',(data)=>{
+    console.log(`player with socket.id of ${socket.id} has moved: data sent back:${JSON.stringify(data)}`)
+    io.sockets.emit('MSG_MOVED',data)
+  })
+  socket.on('MSG_OFFERED',(data)=>{
+    console.log(`player with socket.id of ${socket.id} has offered: data sent back:${JSON.stringify(data)}`)
+    io.sockets.emit('MSG_OFFERED',data)
+  })
+  socket.on('MSG_ACCEPTED',(data)=>{
+    console.log(`player with socket.id of ${socket.id} has accepted: data sent back:${JSON.stringify(data)}`)
+    io.sockets.emit('MSG_ACCEPTED',data)
+  })
+})
+io.on('disconnect', () => {
+  console.log('user disconnected');
+});

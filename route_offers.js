@@ -3,7 +3,7 @@ const knex = require('./dbservice')
 function getAllOffers(req, res) {
   //returns only those offers that have not been accepted
   let playerid = req.params.playerid
-  console.log(`In getAllOffers playerid:${playerid}`)
+  //console.log(`In getAllOffers playerid:${playerid}`)
   knex('fr_offers')
     .select('offerid','fromplayer','madeon','nickname')
     .innerJoin('fr_players',{'fr_players.playerid':'fr_offers.fromplayer'})
@@ -22,7 +22,7 @@ function getPendingOffers(req, res) {
   //returns only those offers that have not been made
   //by the player but not accepted by the opponent.
   let playerid = req.params.playerid
-  console.log(`In getPendingOffers playerid:${playerid}`)
+  //console.log(`In getPendingOffers playerid:${playerid}`)
   knex('fr_offers')
     .select('offerid','toplayer','madeon','nickname')
     .innerJoin('fr_players',{'fr_players.playerid':'fr_offers.toplayer'})

@@ -4,16 +4,27 @@ let currentCol = 1
 //set the picture, nickname and playerid as soon as the player logs in
 let picture = ''
 let nickname = ''
-let playerid = 0
+var playerid = 0
+var opponentid = 0
 //set the matchid as soon as the match is selected
-let matchid
+var matchid
 import {
   getactiveGames, createUserIfNeeded,
   getcompletedGames, getTries, submitTry,
   getPlayers, existsWord, getInvitations,
   getPendingInvitations, getUser, sendAnOffer,
-  acceptAnOffer
+  acceptAnOffer,
 } from './data.js'
+import {
+  MSG_MOVED,
+  MSG_OFFERED,
+  MSG_ACCEPTED,
+  sendMessageMoved,
+  sendMessageOffered,
+  sendMessageAccepted,
+  setUpSocketListeners
+} from './messages.js'
+
 
 /**
  * Starts the authentication flow
@@ -41,10 +52,9 @@ const logout = () => {
     console.log("Log out failed", err);
   }
 };
-
 const updateactiveGames = async (playerid) => {
   const games = await getactiveGames(playerid)
-  // console.log(`Active games:${games}`)
+  console.log(`Active games:${JSON.stringify(games)}`)
   const activegameslist = document.getElementById('activegameslist')
   if (activegameslist.children.length > 0) {
     activegameslist.children.forEach(child => {
@@ -57,12 +67,14 @@ const updateactiveGames = async (playerid) => {
     let opponent = games[i].opponent.length > 15 ? games[i].opponent.substring(0, 12) + '...' : games[i].opponent
     el.innerHTML = `Match :${games[i].matchid} vs ${opponent}`
     el.setAttribute('data-matchid', games[i].matchid)
+    el.setAttribute('data-opponentid', games[i].playerid)
     el.classList.add('activegame')
     el.addEventListener('click', async e => {
       // console.log(e.target.dataset.matchid)
       //get the match data
       matchid = e.target.dataset.matchid
-      await updateMatchGrid(matchid)
+      opponentid = e.target.dataset.opponentid*1
+      await updateMatchGrid()
       // document.getElementById('onlyinputs').style="visibility:visible"
       // matchid = e.target.dataset.matchid
       // const tries = await getTries(matchid, playerid)
@@ -88,30 +100,29 @@ const updateactiveGames = async (playerid) => {
   }
 
 }
-const clearMatchGrd = ()=>{
-for (let row = 1; row<7; row++) {
-  // console.log(typeof (tries[atry].result))
-  let rowEl = document.querySelector(`#row${row}`)
-  for (let ch = 0; ch < 5; ch++) {
-    //identify the column
-    rowEl.childNodes[ch].value =""
-    rowEl.childNodes[ch].classList.remove('t0')
-    rowEl.childNodes[ch].classList.remove('t1')
-    rowEl.childNodes[ch].classList.remove('t2')
+const clearMatchGrd = () => {
+  for (let row = 1; row < 7; row++) {
+    // console.log(typeof (tries[atry].result))
+    let rowEl = document.querySelector(`#row${row}`)
+    for (let ch = 0; ch < 5; ch++) {
+      //identify the column
+      rowEl.childNodes[ch].value = ""
+      rowEl.childNodes[ch].classList.remove('t0')
+      rowEl.childNodes[ch].classList.remove('t1')
+      rowEl.childNodes[ch].classList.remove('t2')
+    }
   }
 }
-}
-
-const updateMatchGrid = async (matchid) => {
+const updateMatchGrid = async () => {
 
   //clear the old grid
   clearMatchGrd()
 
-  currentRow=1
+  currentRow = 1
   document.getElementById('onlyinputs').style = "visibility:visible"
   //returns an array of all the tries
   const tries = await getTries(matchid, playerid)
-  console.log(JSON.stringify(tries))
+  console.log(`Tries made by playerid:${playerid}:${JSON.stringify(tries)}`)
   for (let atry = 0; atry < tries.length; atry++) {
     console.log(tries[atry].result)
     // console.log(typeof (tries[atry].result))
@@ -145,11 +156,11 @@ const updatecompletedGames = async (playerid) => {
     //decide on text
     let txt = ''
     if (games[i].mytrynumber < games[i].opptrynumber) {
-      txt = `Match# ${games[i].matchid} You won: ${games[i].mytrynumber} vs ${games[i].opponent}'s ${games[i].opptrynumber}`
+      txt = `Match# ${games[i].matchid} You won: ${games[i].mytrynumber}-${games[i].opptrynumber} against ${games[i].nickname}`
     } else if (games[i].mytrynumber > games[i].opptrynumber) {
-      txt = `Match# ${games[i].matchid} You lost: ${games[i].mytrynumber} vs ${games[i].opponent}'s ${games[i].opptrynumber}`
+      txt = `Match# ${games[i].matchid} You lost: ${games[i].mytrynumber}-${games[i].opptrynumber} against ${games[i].nickname}`
     } else {
-      txt = `Match# ${games[i].matchid} You drew: ${games[i].mytrynumber} vs ${games[i].opponent}'s ${games[i].opptrynumber}`
+      txt = `Match# ${games[i].matchid} You drew: ${games[i].mytrynumber}-${games[i].opptrynumber} against ${games[i].nickname}`
     }
 
     el.innerHTML = txt
@@ -222,7 +233,7 @@ let kb_buttons = document.querySelectorAll('.key-row button')
 kb_buttons = [...kb_buttons]
 for (let i = 0; i < kb_buttons.length; i++) {
   let kb_button = kb_buttons[i]
-  kb_button.addEventListener('click',async (e) => {
+  kb_button.addEventListener('click', async (e) => {
     let row = document.getElementById(`row${currentRow}`)
     switch (e.target.innerText) {
       case 'ENTER':
@@ -232,8 +243,8 @@ for (let i = 0; i < kb_buttons.length; i++) {
           guess += row.childNodes[ch].value
         }
         console.log(matchid, playerid, guess, currentRow)
-        submitTry(matchid, playerid, guess, currentRow)
-        await updateMatchGrid(matchid)
+        await submitTry(matchid, playerid, guess, currentRow,opponentid)
+        sendMessageMoved(playerid,matchid)
         break;
       case 'BACK':
 
@@ -251,6 +262,9 @@ for (let i = 0; i < kb_buttons.length; i++) {
   })
 }
 window.addEventListener('load', async () => {
+  document.getElementById('btn-results').addEventListener('click', () => {
+    document.getElementById('results').style.display = "none"
+  })
   document.getElementById('btn-login').addEventListener('click', login)
   document.getElementById('btn-logout').addEventListener('click', logout)
   document.getElementById('btn-invite').addEventListener('click', async () => {
@@ -259,6 +273,7 @@ window.addEventListener('load', async () => {
     console.log(playerid, toPlayer, word)
     let response = await sendAnOffer(playerid, toPlayer, word)
     console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
+    sendMessageOffered(response[0].offerid,playerid,toPlayer)
   })
   document.getElementById('btn-accept').addEventListener('click', async () => {
     let offerid = document.querySelector('.selectedinvitation').dataset.offerid * 1
@@ -268,6 +283,7 @@ window.addEventListener('load', async () => {
     console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
     updateactiveGames(playerid)
     updateInvitationsList(playerid)
+    sendMessageAccepted(response[0].offeerid,playerid,)
   })
   document.getElementById('background').addEventListener('click', () => {
     document.getElementById('backgroundinfo').classList.toggle('hidden')
@@ -414,7 +430,7 @@ const updateUI = async () => {
   document.getElementById(`btn-login`).disabled = isAuthenticated
   let user = await auth0.getUser()
   if (user) {
-    // console.log(JSON.stringify(user))
+    console.log(`Auth0 returned a user:${JSON.stringify(user)}`)
     playerid = await createUserIfNeeded(user.name, user.nickname)
     nickname = user.nickname
     updateactiveGames(playerid)
@@ -422,6 +438,7 @@ const updateUI = async () => {
     updatePlayersList(playerid)
     updateInvitationsList(playerid)
     updatePendingInvitations(playerid)
+    setUpSocketListeners(playerid)
     updateActiveCell()
     document.querySelector('#title span').innerText = `${nickname}'s Murdle`
   }
@@ -476,3 +493,21 @@ const requireAuth = async (fn) => {
 
   return login();
 };
+const displayResults = (heading, details) => {
+  const resultsEl = document.getElementById('results')
+  resultsEl.style.top = window.innerHeight / 2
+  resultsEl.style.left = window.innerWidth / 2
+
+  const resultsheading = document.getElementById('resultsheading')
+  resultsheading.innerText = heading
+  const resultsdetails = document.getElementById('resultsdetails')
+  resultsdetails.innerText = details
+
+  resultsEl.style.display = 'block'
+
+}
+export{
+  updateMatchGrid,
+  updateInvitationsList,
+  updateactiveGames
+}

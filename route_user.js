@@ -27,12 +27,12 @@ function getUser(req, res) {
 }
 function addUser(req, res) {
   let email=req.body.email
-  let pwd=req.body.pwd
   let nickname=req.body.nickname
   knex('fr_players')
-  .insert({email,pwd,nickname})
-  .then(() => {
-    res.sendStatus(200)
+  .insert({email,nickname})
+  .returning('playerid')
+  .then((data) => {
+    res.json(data)
   })
   .catch(err => {
     console.error(`Error in addUser: ${err}`)
