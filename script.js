@@ -1,4 +1,6 @@
 let auth0 = null;
+let socket = null;
+
 let currentRow = 1
 let currentCol = 1
 //set the picture, nickname and playerid as soon as the player logs in
@@ -56,8 +58,9 @@ const updateactiveGames = async (playerid) => {
   const games = await getactiveGames(playerid)
   console.log(`Active games:${JSON.stringify(games)}`)
   const activegameslist = document.getElementById('activegameslist')
-  if (activegameslist.children.length > 0) {
-    activegameslist.children.forEach(child => {
+  const activegameslist_els = [...activegameslist.children]
+  if (activegameslist_els.length > 0) {
+    activegameslist_els.forEach(child => {
       child.remove()
     });
   }
@@ -144,9 +147,9 @@ const updatecompletedGames = async (playerid) => {
   const games = await getcompletedGames(playerid)
   //console.log(games)
   const completedgames = document.getElementById('completedgameslist')
-
-  if (completedgames.children.length > 0) {
-    completedgames.children.forEach(child => {
+  const completedgames_els = [...completedgames.children]
+  if (completedgames_els.length > 0) {
+    completedgames_els.forEach(child => {
       child.remove()
     });
   }
@@ -172,9 +175,9 @@ const updatePlayersList = async (playerid) => {
   const plrs = await getPlayers(playerid)
   //console.log(plrs)
   const playerslist = document.getElementById('playerslist')
-
-  if (playerslist.children.length > 0) {
-    playerslist.children.forEach(child => {
+  const playerslist_els = [...playerslist.children]
+  if (playerslist_els.length > 0) {
+    playerslist_els.forEach(child => {
       child.remove()
     });
   }
@@ -192,9 +195,9 @@ const updateInvitationsList = async (playerid) => {
   const plrs = await getInvitations(playerid)
   //console.log(plrs)
   const invitationslist = document.getElementById('invitationslist')
-
-  if (invitationslist.children.length > 0) {
-    invitationslist.children.forEach(child => {
+  const invitationslist_els = [...invitationslist.children]
+  if (invitationslist_els.length > 0) {
+    invitationslist_els.forEach(child => {
       child.remove()
     });
   }
@@ -213,9 +216,9 @@ const updatePendingInvitations = async (playerid) => {
   const invitations = await getPendingInvitations(playerid)
   // console.log(invitations)
   const pendinginvitations = document.getElementById('pendinginvitations')
-
-  if (pendinginvitations.children.length > 0) {
-    pendinginvitations.children.forEach(child => {
+  const pendinginvitations_els = [...pendinginvitations.children]
+  if (pendinginvitations_els.length > 0) {
+    pendinginvitations_els.forEach(child => {
       child.remove()
     });
   }
@@ -273,6 +276,7 @@ window.addEventListener('load', async () => {
     console.log(playerid, toPlayer, word)
     let response = await sendAnOffer(playerid, toPlayer, word)
     console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
+    updatePendingInvitations(playerid)
     sendMessageOffered(response[0].offerid,playerid,toPlayer)
   })
   document.getElementById('btn-accept').addEventListener('click', async () => {
@@ -283,7 +287,7 @@ window.addEventListener('load', async () => {
     console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
     updateactiveGames(playerid)
     updateInvitationsList(playerid)
-    sendMessageAccepted(response[0].offeerid,playerid,)
+    sendMessageAccepted(response[0].offerid,playerid,)
   })
   document.getElementById('background').addEventListener('click', () => {
     document.getElementById('backgroundinfo').classList.toggle('hidden')
@@ -430,6 +434,7 @@ const updateUI = async () => {
   document.getElementById(`btn-login`).disabled = isAuthenticated
   let user = await auth0.getUser()
   if (user) {
+    socket = io.connect("http://localhost:5500")
     console.log(`Auth0 returned a user:${JSON.stringify(user)}`)
     playerid = await createUserIfNeeded(user.name, user.nickname)
     nickname = user.nickname
@@ -507,6 +512,7 @@ const displayResults = (heading, details) => {
 
 }
 export{
+  socket,
   updateMatchGrid,
   updateInvitationsList,
   updateactiveGames

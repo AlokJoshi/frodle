@@ -108,11 +108,13 @@ function makeAGuess(req, res) {
                   console.log(`emit a results message with draw: both players could not do it`)
                 }else if((numCorrect == 5) && oppdone){
                   //both players have finished
-                  console.log(`emit a results message with draw:`)
+                  console.log(`emit a results message: both players have finished`)
                   if(trynumber<opptrynumber){
                     //player has won
+                    console.log(`emit a results message: player has won`)
                   }else if(trynumber>opptrynumber){
                     //opponent has won
+                    console.log(`emit a results message: opponent has won`)
                   }else{
                     //it is a draw
                     console.log(`emit a results message with draw`)
@@ -120,8 +122,10 @@ function makeAGuess(req, res) {
                 }else if((numCorrect==5) && ((opptrynumber==6) && !oppdone)){
                   //opponent waas not able to complete in 6 tries while player was
                   //player has won
+                  console.log(`emit a results message: player has won`)
                 }else if (oppdone && ((trynumber==6) && numCorrect<5)){
-                  //player has won
+                  //opponent has won
+                  console.log(`emit a results message: opponent has won`)
                 }
               })
             }

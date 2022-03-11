@@ -9,6 +9,7 @@ function getAllOffers(req, res) {
     .innerJoin('fr_players',{'fr_players.playerid':'fr_offers.fromplayer'})
     .where('toplayer', playerid)
     .where('acceptedon',null)
+    .orderBy('offerid','desc')
     .then(data => {
       res.json(data)
     })
@@ -28,6 +29,7 @@ function getPendingOffers(req, res) {
     .innerJoin('fr_players',{'fr_players.playerid':'fr_offers.toplayer'})
     .where('fromplayer', playerid)
     .where('acceptedon',null)
+    .orderBy('offerid','desc')
     .then(data => {
       res.json(data)
     })

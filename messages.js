@@ -1,5 +1,4 @@
-import { updateMatchGrid,updateInvitationsList,updateactiveGames } from "./script.js"
-const socket = io.connect("http://localhost:5500")
+import { socket,updateMatchGrid,updateInvitationsList,updateactiveGames } from "./script.js"
 
 const MSG_MOVED='MSG_MOVED'
 const MSG_OFFERED='MSG_OFFERED'

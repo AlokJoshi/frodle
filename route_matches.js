@@ -47,7 +47,7 @@ function getAllActiveMatches(req, res) {
   knex('fr_match_details as myMatch')
   .innerJoin('fr_match_details as oppMatch',{'myMatch.matchid':'oppMatch.matchid'})
   .innerJoin('fr_players',{'oppMatch.playerid':'fr_players.playerid'})
-  .where(knex.raw('("myMatch".playerdone = false or "oppMatch".playerdone = false)'))
+  .where(knex.raw('(("myMatch".playerdone = false and "myMatch".trynumber<6) or ("oppMatch".playerdone = false and "oppMatch".trynumber<6))'))
   .andWhere('myMatch.playerid',playerid)
   .andWhere(knex.raw(`"myMatch"."matchdetailsid" <> "oppMatch"."matchdetailsid"`))
   .select('myMatch.*','oppMatch.*','nickname as opponent')
