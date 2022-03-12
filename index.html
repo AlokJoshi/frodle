@@ -18,7 +18,7 @@
     <button id="btn-login" disabled="true">Log in</button>
     <button id="btn-logout" disabled="true">Log out</button>
   </div>
-  <div id="background">Background</div>
+  <div id="background">How does it work?</div>
   <div id="backgroundinfo" class="hidden">
     <p>It is just Wordle with friends. It goes like this..</p>
     <p>You invite a friend over to play with you.</p>
@@ -57,7 +57,7 @@
         <div id="activegameslist"></div>
       </div>
       <div id="invitationsreceived" style="border-bottom:1px solid black">
-        <h2>Invitations to play</h2>  
+        <h2>Invitations to play</h2>
         <div id="invitationslist"></div>
         <h2 id="acceptancemessage">Word for</h2>
         <input id="challengeword2" class="invalid" value="XXXXX" maxlength="5" minlength="5">
@@ -91,54 +91,41 @@
         <h2 id="invitationmessage">Word for</h2>
         <input id="challengeword" class="invalid" value="XXXXX" maxlength="5" minlength="5">
         <br>
-        <button id="btn-invite" disabled>Invite</button>  
+        <button id="btn-invite" disabled>Invite</button>
         <br>
         <h2 style="border-top:1px solid black">Pending Invitations</h2>
         <div id="pendinginvitations"></div>
       </div>
     </div>
-  </div>
-  <div class="key-container">
-    <div class="key-board">
-      <div class="key-row"><button class="">Q</button><button class="">W</button><button class="">E</button><button
-          class="">R</button><button class="">T</button><button class="">Y</button><button class="">U</button><button
-          class="">I</button><button class="">O</button><button class="">P</button></div>
-      <div class="key-row">
-        <div class="left-space"></div><button class="">A</button><button class="">S</button><button
-          class="">D</button><button class="">F</button><button class="">G</button><button class="">H</button><button
-          class="">J</button><button class="">K</button><button class="">L</button>
-        <div class="left-space"></div>
+    <div class="key-container">
+      <div class="key-board">
+        <div class="key-row"><button class="">Q</button><button class="">W</button><button class="">E</button><button
+            class="">R</button><button class="">T</button><button class="">Y</button><button class="">U</button><button
+            class="">I</button><button class="">O</button><button class="">P</button></div>
+        <div class="key-row">
+          <div class="left-space"></div><button class="">A</button><button class="">S</button><button
+            class="">D</button><button class="">F</button><button class="">G</button><button class="">H</button><button
+            class="">J</button><button class="">K</button><button class="">L</button>
+          <div class="left-space"></div>
+        </div>
+        <div class="key-row"><button class="">ENTER</button><button class="">Z</button><button
+            class="">X</button><button class="">C</button><button class="">V</button><button class="">B</button><button
+            class="">N</button><button class="">M</button><button class="">BACK</button></div>
       </div>
-      <div class="key-row"><button class="">ENTER</button><button class="">Z</button><button class="">X</button><button
-          class="">C</button><button class="">V</button><button class="">B</button><button class="">N</button><button
-          class="">M</button><button class="">BACK</button></div>
     </div>
   </div>
   <div id="completedgames">
     <h2>Completed Games</h2>
     <div id="completedgameslist"></div>
   </div>
-  <!-- <div id="register">
-    <h2 id="registrationheading">Register</h2>
-    <br>
-    <div id="registrationitems">
-      <label for="#email">Email</label>
-      <input type="text" id="email">
-      <label for="#nickname">Nickname</label>
-      <input type="text" id="nickname">
-      <label for="#password">Password</label>
-      <input type="password" id="password">
-    </div>
-    <div id="submitregistration">
-      <button id="butregister">Register</button>
-    </div>
-  </div> -->
   <div id="results">
     <h2 id="resultsheading">Match #22 vs ABC</h2>
     <h3 id="resultsdetails">You won</h3>
     <button id="btn-results">OK</button>
   </div>
-  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
+  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+    integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+    crossorigin="anonymous"></script>
   <!-- <script src="https://unpkg.com/socket.io-client@3.1.3/dist/socket.io.min.js"></script> -->
   <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
   <script src="data.js" type="module"></script>

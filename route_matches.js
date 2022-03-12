@@ -51,6 +51,7 @@ function getAllActiveMatches(req, res) {
   .andWhere('myMatch.playerid',playerid)
   .andWhere(knex.raw(`"myMatch"."matchdetailsid" <> "oppMatch"."matchdetailsid"`))
   .select('myMatch.*','oppMatch.*','nickname as opponent')
+  .orderBy('myMatch.matchid','desc')
   // .on('query',(q)=>console.log(q.sql))
   .then(data=>{
     //console.log(`in getAllActiveMatches, data returned to clieent: ${JSON.stringify(data)}`)

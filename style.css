@@ -1,4 +1,4 @@
-*{
+html,*{
   margin:0;
   padding:0;
   box-sizing: border-box;
@@ -143,8 +143,8 @@
   display:grid;  
 }
 #playerslist,#activegameslist{
-  max-height: 150px;
-  min-height: 150px;
+  max-height: 130px;
+  min-height: 130px;
   overflow-y:scroll;
   overflow-x:hidden;
   border-bottom: 1px solid black;
@@ -189,4 +189,45 @@
   z-index: 100;
   padding: 10px;
   display:none;
+}
+#activegamesandinvitationsreceived{
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+}
+#playersandinvitation{
+  grid-column: 3 / 4;
+  grid-row: 1 / 3; 
+}
+#activegames,.key-container{
+  grid-column: 2 / 3;  
+}
+@media screen and (max-width:700px){
+  #games{
+    grid-template-columns: 1fr 3fr;
+  }
+  #activegamesandinvitationsreceived{
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+  }
+  #currentgame{
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+  }
+  .key-container{
+    grid-column: 1 / 3;  
+    grid-row: 2 / 3;
+  }  
+  #playersandinvitation{
+    grid-column: 1 / 3;
+    grid-row: 3 / 4;
+  }
+  .row{
+    gap:2px;
+  }
+  .tile{
+    width:42px;
+  }
+}
+#completedgames{
+  margin:10px;
 }

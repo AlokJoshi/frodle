@@ -25,7 +25,7 @@ function getPendingOffers(req, res) {
   let playerid = req.params.playerid
   //console.log(`In getPendingOffers playerid:${playerid}`)
   knex('fr_offers')
-    .select('offerid','toplayer','madeon','nickname')
+    .select('offerid','toplayer','madeon','nickname','wordoffer')
     .innerJoin('fr_players',{'fr_players.playerid':'fr_offers.toplayer'})
     .where('fromplayer', playerid)
     .where('acceptedon',null)

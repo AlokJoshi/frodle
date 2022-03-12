@@ -68,7 +68,7 @@ const updateactiveGames = async (playerid) => {
   for (let i = 0; i < games.length; i++) {
     let el = document.createElement('div')
     let opponent = games[i].opponent.length > 15 ? games[i].opponent.substring(0, 12) + '...' : games[i].opponent
-    el.innerHTML = `Match :${games[i].matchid} vs ${opponent}`
+    el.innerHTML = `#${games[i].matchid} with ${opponent}`
     el.setAttribute('data-matchid', games[i].matchid)
     el.setAttribute('data-opponentid', games[i].playerid)
     el.classList.add('activegame')
@@ -205,7 +205,7 @@ const updateInvitationsList = async (playerid) => {
   for (let i = 0; i < plrs.length; i++) {
     let el = document.createElement('div')
     let nickname = plrs[i].nickname.length > 15 ? plrs[i].nickname.substring(0, 12) + '...' : plrs[i].nickname
-    el.innerHTML = `Offer#:${plrs[i].offerid} from ${nickname}`
+    el.innerHTML = `#${plrs[i].offerid} from ${nickname}`
     el.setAttribute('data-playerid', plrs[i].fromplayer)
     el.setAttribute('data-offerid', plrs[i].offerid)
     el.setAttribute('data-nickname', plrs[i].nickname)
@@ -226,7 +226,7 @@ const updatePendingInvitations = async (playerid) => {
   for (let i = 0; i < invitations.length; i++) {
     let el = document.createElement('div')
     let nickname = invitations[i].nickname.length > 15 ? invitations[i].nickname.substring(0, 12) + '...' : invitations[i].nickname
-    el.innerHTML = `Offer#:${invitations[i].offerid} to ${nickname}`
+    el.innerHTML = `#${invitations[i].offerid} ${invitations[i].wordoffer} to ${nickname}`
     pendinginvitations.append(el)
   }
 }
@@ -332,14 +332,14 @@ window.addEventListener('load', async () => {
     invitationsArray.forEach(element => element.classList.remove('selectedinvitation'))
     e.target.classList.add('selectedinvitation')
     document.getElementById("acceptancemessage").innerText = `Word for offer#: ${e.target.dataset.offerid} from ${nickname}`
-    console.log(e.target)
+    // console.log(e.target)
   });
   document.getElementById('playerslist').addEventListener('click', e => {
     let opponentsArray = [...document.querySelectorAll("#playerslist>div")]
     opponentsArray.forEach(element => element.classList.remove('selectedopponent'))
     e.target.classList.add('selectedopponent')
     document.getElementById("invitationmessage").innerText = `Word for ${e.target.innerText}`
-    console.log(e.target)
+    // console.log(e.target)
   });
   document.addEventListener('keydown', (e) => {
     if (e.target == document.getElementById('challengeword') ||
@@ -348,7 +348,7 @@ window.addEventListener('load', async () => {
     }
     e.preventDefault()
     let key = e.key.toUpperCase()
-    console.log(e.key)
+    // console.log(e.key)
     switch (key) {
       case 'ARROWRIGHT':
         currentCol++
@@ -389,7 +389,7 @@ window.addEventListener('load', async () => {
         //identify the input element for entering the clicked letter
         let row = document.getElementById(`row${currentRow}`)
         let input = Array.from(row.childNodes)[currentCol - 1]
-        console.log(key)
+        // console.log(key)
         input.value = key
         currentCol++
         if (currentCol > 5) currentCol = 1
