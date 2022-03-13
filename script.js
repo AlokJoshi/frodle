@@ -434,7 +434,9 @@ const updateUI = async () => {
   document.getElementById(`btn-login`).disabled = isAuthenticated
   let user = await auth0.getUser()
   if (user) {
-    socket = io.connect("http://localhost:5500")
+    let server = window.location.origin
+    console.log(`Server the socket is connecting to: ${server}`)
+    socket = io.connect(server)
     console.log(`Auth0 returned a user:${JSON.stringify(user)}`)
     playerid = await createUserIfNeeded(user.name, user.nickname)
     nickname = user.nickname
