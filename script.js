@@ -417,8 +417,12 @@ window.addEventListener('load', async () => {
   const query = window.location.search
   if (query.includes("code=") && query.includes("state=")) {
 
-    //process the login state
-    await auth0.handleRedirectCallback()
+    try{
+      //process the login state
+      await auth0.handleRedirectCallback()
+    }catch(err){
+      console.log(`Error in handle redirect: ${err}`)
+    }
 
     updateUI()
 
