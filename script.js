@@ -282,12 +282,13 @@ window.addEventListener('load', async () => {
   document.getElementById('btn-accept').addEventListener('click', async () => {
     let offerid = document.querySelector('.selectedinvitation').dataset.offerid * 1
     let word = document.querySelector('#challengeword2').value.toUpperCase()
+    let opponentid = document.querySelector('.selectedinvitation').dataset.playerid * 1
     console.log(offerid, word)
     let response = await acceptAnOffer(playerid, offerid, word)
     console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
     updateactiveGames(playerid)
     updateInvitationsList(playerid)
-    sendMessageAccepted(response[0].offerid,playerid,)
+    sendMessageAccepted(offerid,playerid,opponentid)
   })
   document.getElementById('background').addEventListener('click', () => {
     document.getElementById('backgroundinfo').classList.toggle('hidden')
