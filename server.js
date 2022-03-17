@@ -72,7 +72,7 @@ app.get('/api/exists/:word', (req, res) => {
   }
 })
 
-const server = app.listen(port, () => console.log(`Frodle app listening on port ${port}!`))
+const server = app.listen(port, () => console.log(`Murdle app listening on port ${port}!`))
 const io = socket(server)
 io.on('connection',(socket)=>{
   console.log('a user connected');

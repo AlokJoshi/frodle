@@ -1,4 +1,5 @@
-import { socket,updateMatchGrid,updateInvitationsList,updateactiveGames } from "./script.js"
+import { socket,updateMatchGrid,updateInvitationsList,
+  updatePendingInvitations,updateactiveGames } from "./script.js"
 
 const MSG_MOVED='MSG_MOVED'
 const MSG_OFFERED='MSG_OFFERED'
@@ -18,32 +19,35 @@ const sendMessageOffered = (offerid,fromplayer,toplayer)=>{
   })  
 }
 const sendMessageAccepted = (offerid,fromplayer,toplayer)=>{
-  socket.emit(MSG_OFFERED,{
+  socket.emit(MSG_ACCEPTED,{
     offerid,
     fromplayer,
     toplayer
   })  
 }
 const setUpSocketListeners=(playerid)=>{
-  socket.on(MSG_MOVED,(data)=>{
+  socket.on(MSG_MOVED,async (data)=>{
     //do something when the message is received back
     console.log(`message moved ${JSON.stringify(data)}`)
     if(data.playerid == playerid){
-      updateMatchGrid()
+      await updateMatchGrid()
     }
   })
-  socket.on(MSG_OFFERED,(data)=>{
-    //do something when the message is received back
-    console.log(`message offered ${JSON.stringify(data)}`)
-    if(data.toplayer == playerid){
-      updateInvitationsList(playerid)
+  socket.on(MSG_OFFERED,async (data)=>{
+    //do something when the message offred is received back
+    console.log(`message offered received: ${JSON.stringify(data)}`)
+    if(data.fromplayer == playerid || data.toplayer == playerid){
+      await updateInvitationsList(playerid)
+      await updatePendingInvitations(playerid)
     }
   })
-  socket.on(MSG_ACCEPTED,(data)=>{
+  socket.on(MSG_ACCEPTED,async (data)=>{
     //do something when the message is received back
-    console.log(`message offered ${JSON.stringify(data)}`)
-    if(data.fromplayer == playerid){
-      updateactiveGames(playerid)
+    console.log(`message accepted received: ${JSON.stringify(data)}`)
+    if(data.fromplayer == playerid || data.toplayer == playerid){
+      await updateInvitationsList(playerid)
+      await updatePendingInvitations(playerid)
+      await updateactiveGames(playerid)
     }
   })
 

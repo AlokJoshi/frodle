@@ -56,7 +56,7 @@ const logout = () => {
 };
 const updateactiveGames = async (playerid) => {
   const games = await getactiveGames(playerid)
-  console.log(`Active games:${JSON.stringify(games)}`)
+  //console.log(`Active games:${JSON.stringify(games)}`)
   const activegameslist = document.getElementById('activegameslist')
   const activegameslist_els = [...activegameslist.children]
   if (activegameslist_els.length > 0) {
@@ -294,14 +294,14 @@ window.addEventListener('load', async () => {
     document.getElementById('backgroundinfo').classList.toggle('hidden')
   })
   document.getElementById('challengeword').addEventListener('keyup', async e => {
-    console.log(`Challenge word: ${e.target.value}`)
+    //console.log(`Challenge word: ${e.target.value}`)
     if (e.target.value.length != 5) {
       e.target.classList.add('invalid')
       document.querySelector('#btn-invite').setAttribute('disabled', true)
       return
     }
     let status = await existsWord(e.target.value)
-    console.log(`Challenge word exists:${status}`)
+    //console.log(`Challenge word exists:${status}`)
     if (status == 200) {
       e.target.classList.remove('invalid')
       document.querySelector('#btn-invite').removeAttribute('disabled')
@@ -311,14 +311,14 @@ window.addEventListener('load', async () => {
     }
   })
   document.getElementById('challengeword2').addEventListener('keyup', async e => {
-    console.log(`Challenge word2: ${e.target.value}`)
+    //console.log(`Challenge word2: ${e.target.value}`)
     if (e.target.value.length != 5) {
       e.target.classList.add('invalid')
       document.querySelector('#btn-accept').setAttribute('disabled', true)
       return
     }
     let status = await existsWord(e.target.value)
-    console.log(`Challenge word exists:${status}`)
+    //console.log(`Challenge word exists:${status}`)
     if (status == 200) {
       e.target.classList.remove('invalid')
       document.querySelector('#btn-accept').removeAttribute('disabled')
@@ -411,6 +411,7 @@ window.addEventListener('load', async () => {
 
   if (isAuthenticated) {
     //show the gated content
+    updateUI()
     return
   }
 
@@ -523,5 +524,6 @@ export{
   socket,
   updateMatchGrid,
   updateInvitationsList,
-  updateactiveGames
+  updateactiveGames,
+  updatePendingInvitations
 }
