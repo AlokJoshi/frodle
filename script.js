@@ -77,49 +77,29 @@ const updateactiveGames = async (playerid) => {
       //get the match data
       matchid = e.target.dataset.matchid
       opponentid = e.target.dataset.opponentid*1
-      await updateMatchGrid()
-      // document.getElementById('onlyinputs').style="visibility:visible"
-      // matchid = e.target.dataset.matchid
-      // const tries = await getTries(matchid, playerid)
-      // //console.log(JSON.stringify(tries))
-      // for (let atry = 0; atry < tries.length; atry++) {
-      //   // console.log(tries[atry].result)
-      //   // console.log(typeof (tries[atry].result))
-      //   let row = document.querySelector(`#row${atry + 1}`)
-      //   let wordArray = tries[atry].try.split('')
-      //   for (let ch = 0; ch < wordArray.length; ch++) {
-      //     //identify the column
-      //     row.childNodes[ch].value = wordArray[ch]
-      //     if (tries[atry].result != null) {
-      //       // console.log(tries[atry].result[ch])
-      //       row.childNodes[ch].classList.add(`t${tries[atry].result[ch]}`)
-      //     }
-      //   }
-      // }
-      // currentRow = tries.length+1
-      // updateActiveCell()
+      await updateMatchGrid(matchid,playerid)
     })
     activegameslist.append(el)
   }
 
 }
-const clearMatchGrd = () => {
+const clearMatchGrid = () => {
   for (let row = 1; row < 7; row++) {
     // console.log(typeof (tries[atry].result))
-    let rowEl = document.querySelector(`#row${row}`)
+    let rowEls = document.querySelectorAll(`#row${row} > div`)
     for (let ch = 0; ch < 5; ch++) {
       //identify the column
-      rowEl.childNodes[ch].value = ""
-      rowEl.childNodes[ch].classList.remove('t0')
-      rowEl.childNodes[ch].classList.remove('t1')
-      rowEl.childNodes[ch].classList.remove('t2')
+      rowEls[ch].innerText = ""
+      rowEls[ch].classList.remove('t0')
+      rowEls[ch].classList.remove('t1')
+      rowEls[ch].classList.remove('t2')
     }
   }
 }
-const updateMatchGrid = async () => {
+const updateMatchGrid = async (matchid,playerid) => {
 
   //clear the old grid
-  clearMatchGrd()
+  clearMatchGrid()
 
   currentRow = 1
   document.getElementById('onlyinputs').style = "visibility:visible"
@@ -127,21 +107,26 @@ const updateMatchGrid = async () => {
   const tries = await getTries(matchid, playerid)
   console.log(`Tries made by playerid:${playerid}:${JSON.stringify(tries)}`)
   for (let atry = 0; atry < tries.length; atry++) {
-    console.log(tries[atry].result)
+    //console.log(tries[atry].result)
     // console.log(typeof (tries[atry].result))
-    let row = document.querySelector(`#row${atry + 1}`)
+    let row = document.querySelectorAll(`#row${atry + 1} > div`)
     let wordArray = tries[atry].try.split('')
     for (let ch = 0; ch < wordArray.length; ch++) {
       //identify the column
-      row.childNodes[ch].value = wordArray[ch]
+      row[ch].innerText = wordArray[ch]
       if (tries[atry].result != null) {
         // console.log(tries[atry].result[ch])
-        row.childNodes[ch].classList.add(`t${tries[atry].result[ch]}`)
+        row[ch].classList.add(`t${tries[atry].result[ch]}`)
       }
     }
   }
-  currentRow = tries.length + 1
-  updateActiveCell()
+  if(tries.length>0 && tries.length<6){
+    currentRow += 1
+    updateActiveCell(currentRow)
+    document.querySelector('.key-container').display='block'
+  }else{
+    document.querySelector('.key-container').display='none'
+  }
 }
 const updatecompletedGames = async (playerid) => {
   const games = await getcompletedGames(playerid)
@@ -237,29 +222,32 @@ kb_buttons = [...kb_buttons]
 for (let i = 0; i < kb_buttons.length; i++) {
   let kb_button = kb_buttons[i]
   kb_button.addEventListener('click', async (e) => {
-    let row = document.getElementById(`row${currentRow}`)
+    let row = document.querySelectorAll(`#row${currentRow} > div`)
     switch (e.target.innerText) {
       case 'ENTER':
         //submit the currentRow and move to the next row
         let guess = ''
-        for (let ch = 0; ch < row.childNodes.length; ch++) {
-          guess += row.childNodes[ch].value
+        //let els=(row.NodeList)
+        console.log(row)
+        for (let ch = 0; ch < row.length; ch++) {
+          guess += row[ch].innerText
         }
         console.log(matchid, playerid, guess, currentRow)
         await submitTry(matchid, playerid, guess, currentRow,opponentid)
         sendMessageMoved(playerid,matchid)
         break;
       case 'BACK':
-
+        currentCol = currentCol==1?currentCol:currentCol-1
+        updateActiveCell(currentRow)
         break;
       default:
         //identify the input element for entering the clicked letter
-        let input = Array.from(row.childNodes)[currentCol - 1]
-        console.log(e.target.innerText)
-        input.value = e.target.innerText
+        let input = row[currentCol - 1]
+        // console.log(e.target.innerText)
+        input.innerText = e.target.innerText
         currentCol++
         if (currentCol > 5) currentCol = 1
-        updateActiveCell()
+        updateActiveCell(currentRow)
         break;
     }
   })
@@ -354,12 +342,12 @@ window.addEventListener('load', async () => {
       case 'ARROWRIGHT':
         currentCol++
         if (currentCol > 5) currentCol = 1
-        updateActiveCell()
+        updateActiveCell(currentRow)
         break;
       case 'ARROWLEFT':
         currentCol--
         if (currentCol == 0) currentCol = 5
-        updateActiveCell()
+        updateActiveCell(currentRow)
         break;
       case 'A':
       case 'B':
@@ -394,7 +382,7 @@ window.addEventListener('load', async () => {
         input.value = key
         currentCol++
         if (currentCol > 5) currentCol = 1
-        updateActiveCell()
+        updateActiveCell(currentRow)
         //input.focus()
         break;
       default:
@@ -453,23 +441,22 @@ const updateUI = async () => {
     updateInvitationsList(playerid)
     updatePendingInvitations(playerid)
     setUpSocketListeners(playerid)
-    updateActiveCell()
+    updateActiveCell(currentRow)
     document.querySelector('#title span').innerText = `${nickname}'s Murdle`
   }
 }
 
-const updateActiveCell = () => {
+const updateActiveCell = (row) => {
   //remove the active class from all the tiles
   let tiles = document.querySelectorAll('.tile')
   tiles.forEach(tile => tile.classList.remove('active'))
 
   //here we should set the currentRow and currentCol after the user
   //clicks or otherwise starts a new game
-  let row = document.getElementById(`row${currentRow}`)
-  let input = Array.from(row.childNodes)[currentCol - 1]
+  let rowEls = document.querySelectorAll(`#row${row} > div`)
+  let input = rowEls[currentCol - 1]
 
   input.classList.toggle('active')
-  input.focus()
 }
 
 /*

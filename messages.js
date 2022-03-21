@@ -30,7 +30,7 @@ const setUpSocketListeners=(playerid)=>{
     //do something when the message is received back
     console.log(`message moved ${JSON.stringify(data)}`)
     if(data.playerid == playerid){
-      await updateMatchGrid()
+      await updateMatchGrid(data.matchid,playerid)
     }
   })
   socket.on(MSG_OFFERED,async (data)=>{
