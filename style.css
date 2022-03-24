@@ -144,17 +144,14 @@ html,*{
   display:grid;  
 }
 #playerslist,#activegameslist{
-  max-height: 100px;
-  min-height: 100px;
+  max-height: 210px;
   overflow-y:scroll;
   overflow-x:hidden;
-  border-bottom: 1px solid black;
 }
 #pendinginvitations,#invitationslist{
-  max-height: 70px;
+  max-height: 210px;
   overflow-y:scroll;
   overflow-x:hidden;
-  border-bottom: 1px solid black;
 }
 #playerslist div{
   cursor:pointer;
@@ -174,7 +171,7 @@ html,*{
   border:1px solid blue;
   border-radius: 2px;
 }
-#invitation > *,#invitationsreceived > *{
+#invitation > *,#invitationsreceived > *,#activegames > *,#players > *{
   margin:2px;
   padding:2px;
 }
@@ -201,6 +198,12 @@ html,*{
 }
 #activegames,.key-container{
   grid-column: 2 / 3;  
+}
+#activegames,#invitationsreceived,#wordwhileacceptinginvitation,#players
+,#invitation,#invitationmessageandword{
+  padding:10px;
+  border:2px solid beige;
+  border-radius: 5px;
 }
 @media screen and (max-width:700px){
   #games{
@@ -232,4 +235,25 @@ html,*{
 }
 #completedgames{
   margin:10px;
+}
+.disabled{
+  pointer-events:none;
+  cursor: not-allowed;
+  opacity:0.65;
+}
+#acceptancemessage,#challengeword2,#btn-accept{
+  padding-left:5px;
+}
+
+.flip{
+  animation: flip 1s linear;
+}
+
+@keyframes flip{
+  from{
+   transform: rotateX(0deg);
+ }
+  to{
+    transform: rotateX(360deg);
+ }
 }

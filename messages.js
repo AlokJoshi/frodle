@@ -28,7 +28,7 @@ const sendMessageAccepted = (offerid,fromplayer,toplayer)=>{
 const setUpSocketListeners=(playerid)=>{
   socket.on(MSG_MOVED,async (data)=>{
     //do something when the message is received back
-    console.log(`message moved ${JSON.stringify(data)}`)
+    console.log(`MSG_MOVED received ${JSON.stringify(data)}`)
     if(data.playerid == playerid){
       await updateMatchGrid(data.matchid,playerid)
     }

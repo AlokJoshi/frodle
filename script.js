@@ -1,6 +1,7 @@
 let auth0 = null;
 let socket = null;
 
+let movesPlayed = 0
 let currentRow = 1
 let currentCol = 1
 //set the picture, nickname and playerid as soon as the player logs in
@@ -78,6 +79,8 @@ const updateactiveGames = async (playerid) => {
       matchid = e.target.dataset.matchid
       opponentid = e.target.dataset.opponentid*1
       await updateMatchGrid(matchid,playerid)
+      const title=document.querySelector('#currentgame > h2')
+      title.textContent=`Current Game (${e.target.innerHTML})`
     })
     activegameslist.append(el)
   }
@@ -93,6 +96,7 @@ const clearMatchGrid = () => {
       rowEls[ch].classList.remove('t0')
       rowEls[ch].classList.remove('t1')
       rowEls[ch].classList.remove('t2')
+      rowEls[ch].classList.remove('flip')
     }
   }
 }
@@ -101,14 +105,11 @@ const updateMatchGrid = async (matchid,playerid) => {
   //clear the old grid
   clearMatchGrid()
 
-  currentRow = 1
   document.getElementById('onlyinputs').style = "visibility:visible"
   //returns an array of all the tries
   const tries = await getTries(matchid, playerid)
-  console.log(`Tries made by playerid:${playerid}:${JSON.stringify(tries)}`)
-  for (let atry = 0; atry < tries.length; atry++) {
-    //console.log(tries[atry].result)
-    // console.log(typeof (tries[atry].result))
+  movesPlayed = tries.length>=6?6:tries.length
+  for (let atry = 0; atry < movesPlayed; atry++) {
     let row = document.querySelectorAll(`#row${atry + 1} > div`)
     let wordArray = tries[atry].try.split('')
     for (let ch = 0; ch < wordArray.length; ch++) {
@@ -117,16 +118,19 @@ const updateMatchGrid = async (matchid,playerid) => {
       if (tries[atry].result != null) {
         // console.log(tries[atry].result[ch])
         row[ch].classList.add(`t${tries[atry].result[ch]}`)
+        if(atry==movesPlayed-1){
+          setInterval(()=>{
+            row[ch].classList.add(`flip`)
+          },200+ch*200)
+        }
       }
     }
   }
-  if(tries.length>0 && tries.length<6){
-    currentRow += 1
-    updateActiveCell(currentRow)
-    document.querySelector('.key-container').display='block'
-  }else{
-    document.querySelector('.key-container').display='none'
-  }
+  currentRow = movesPlayed==6?6:movesPlayed+1
+  console.log(`Tries made by playerid:${playerid}:${JSON.stringify(tries)},Current Row: ${currentRow}`)
+  document.querySelector('.key-container').display=matchid==0?'none':'block'
+  updateActiveCell(currentRow)
+  updateKeyBoard(movesPlayed)
 }
 const updatecompletedGames = async (playerid) => {
   const games = await getcompletedGames(playerid)
@@ -144,11 +148,11 @@ const updatecompletedGames = async (playerid) => {
     //decide on text
     let txt = ''
     if (games[i].mytrynumber < games[i].opptrynumber) {
-      txt = `Match# ${games[i].matchid} You won: ${games[i].mytrynumber}-${games[i].opptrynumber} against ${games[i].nickname}`
+      txt = `#${games[i].matchid} You won: ${games[i].mytrynumber}-${games[i].opptrynumber} vs ${games[i].nickname}`
     } else if (games[i].mytrynumber > games[i].opptrynumber) {
-      txt = `Match# ${games[i].matchid} You lost: ${games[i].mytrynumber}-${games[i].opptrynumber} against ${games[i].nickname}`
+      txt = `#${games[i].matchid} You lost: ${games[i].mytrynumber}-${games[i].opptrynumber} vs ${games[i].nickname}`
     } else {
-      txt = `Match# ${games[i].matchid} You drew: ${games[i].mytrynumber}-${games[i].opptrynumber} against ${games[i].nickname}`
+      txt = `#${games[i].matchid} You drew: ${games[i].mytrynumber}-${games[i].opptrynumber} vs ${games[i].nickname}`
     }
 
     el.innerHTML = txt
@@ -458,7 +462,15 @@ const updateActiveCell = (row) => {
 
   input.classList.toggle('active')
 }
-
+const updateKeyBoard = (movesPlayed) => {
+  //if moves played is 6 then disable ENTER on keyboard
+  const kbEls = [...document.querySelectorAll(`.key-board button`)]
+  if(movesPlayed>=6){
+    kbEls.forEach(kbEl=>kbEl.classList.add('disabled'))
+  }else{
+    kbEls.forEach(kbEl=>kbEl.classList.remove('disabled'))
+  }
+}
 /*
 Original location of login and logout functions
 */
