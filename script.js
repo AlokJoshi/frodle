@@ -72,12 +72,15 @@ const updateactiveGames = async (playerid) => {
     el.innerHTML = `#${games[i].matchid} with ${opponent}`
     el.setAttribute('data-matchid', games[i].matchid)
     el.setAttribute('data-opponentid', games[i].playerid)
-    el.classList.add('activegame')
     el.addEventListener('click', async e => {
       // console.log(e.target.dataset.matchid)
       //get the match data
       matchid = e.target.dataset.matchid
       opponentid = e.target.dataset.opponentid*1
+      //remove selectedgama class from all
+      const games = [...document.querySelectorAll(`#activegameslist > div`)]
+      games.forEach(game=>game.classList.remove(`selectedgame`))
+      e.target.classList.add('selectedgame')
       await updateMatchGrid(matchid,playerid)
       const title=document.querySelector('#currentgame > h2')
       title.textContent=`Current Game (${e.target.innerHTML})`
@@ -130,7 +133,7 @@ const updateMatchGrid = async (matchid,playerid) => {
   console.log(`Tries made by playerid:${playerid}:${JSON.stringify(tries)},Current Row: ${currentRow}`)
   document.querySelector('.key-container').display=matchid==0?'none':'block'
   updateActiveCell(currentRow)
-  updateKeyBoard(movesPlayed)
+  updateKeyBoard(movesPlayed,matchid)
 }
 const updatecompletedGames = async (playerid) => {
   const games = await getcompletedGames(playerid)
@@ -446,6 +449,7 @@ const updateUI = async () => {
     updatePendingInvitations(playerid)
     setUpSocketListeners(playerid)
     updateActiveCell(currentRow)
+    updateKeyBoard(movesPlayed,matchid)
     document.querySelector('#title span').innerText = `${nickname}'s Murdle`
   }
 }
@@ -462,10 +466,10 @@ const updateActiveCell = (row) => {
 
   input.classList.toggle('active')
 }
-const updateKeyBoard = (movesPlayed) => {
+const updateKeyBoard = (movesPlayed,matchid) => {
   //if moves played is 6 then disable ENTER on keyboard
   const kbEls = [...document.querySelectorAll(`.key-board button`)]
-  if(movesPlayed>=6){
+  if(movesPlayed>=6 || !matchid){
     kbEls.forEach(kbEl=>kbEl.classList.add('disabled'))
   }else{
     kbEls.forEach(kbEl=>kbEl.classList.remove('disabled'))

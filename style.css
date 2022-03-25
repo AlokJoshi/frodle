@@ -40,8 +40,7 @@ html,*{
   border:1px solid #e2e2e2;
   display:grid;
   grid-template-columns: 1fr 2fr 1fr;
-  grid-template-rows: 400px;
-  /* align-items: stretch; */
+  grid-template-rows: 600px;
 }
 #games > div{
   margin:10px;
@@ -74,7 +73,7 @@ html,*{
 }
 
 .key-container {
-  margin-top: 100px;
+  margin-top: 20px;
   height: 200px;
 }
 .key-board{
@@ -125,7 +124,7 @@ html,*{
   margin-bottom: 10px;
   gap: 11px;
 }
-.activegame{
+#activegameslist>div{
   cursor:pointer;
 }
 .t0{
@@ -143,7 +142,7 @@ html,*{
 #playersandinvitation{
   display:grid;  
 }
-#playerslist,#activegameslist{
+#playerslist,#activegameslist,#invitationslist{
   max-height: 210px;
   overflow-y:scroll;
   overflow-x:hidden;
@@ -167,11 +166,12 @@ html,*{
 .invalid{
   color:red
 }
-.selectedopponent,.selectedinvitation{
+.selectedopponent,.selectedinvitation,.selectedgame{
   border:1px solid blue;
   border-radius: 2px;
 }
-#invitation > *,#invitationsreceived > *,#activegames > *,#players > *{
+#invitation > *,#invitationsreceived > *,#activegames > *,
+#players > *,#completedgames > *{
   margin:2px;
   padding:2px;
 }
@@ -200,8 +200,8 @@ html,*{
   grid-column: 2 / 3;  
 }
 #activegames,#invitationsreceived,#wordwhileacceptinginvitation,#players
-,#invitation,#invitationmessageandword{
-  padding:10px;
+,#invitation,#invitationmessageandword, #completedgames{
+  padding:5px;
   border:2px solid beige;
   border-radius: 5px;
 }
@@ -214,14 +214,22 @@ html,*{
     grid-row: 1 / 2;
     font-size:smaller;
   }
-  #currentgame{
+  #currentgameandkeyboard{
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;  
+  }
+  .key-container{
+    font-size: 0.5em;
+  }
+  /* #currentgame{
     grid-column: 2 / 3;
     grid-row: 1 / 2;
   }
   .key-container{
-    grid-column: 1 / 3;  
+    grid-column: 2 / 3;  
     grid-row: 2 / 3;
-  }  
+    font-size: 0.5em;
+  }   */
   #playersandinvitation{
     grid-column: 1 / 3;
     grid-row: 3 / 4;
@@ -231,6 +239,31 @@ html,*{
   }
   .tile{
     width:42px;
+    height:42px;
+    font-size: smaller;
+  }
+  .key-row button{
+    padding: 2px;
+    margin: 0 2px 0 0;
+    height: 38px;
+  }
+  #challengeword,#challengeword2{
+    width:30px;
+    font-size: 0.7em;
+  }
+  #btn-accept,#btn-invite{
+    width:60px;
+    font-size: 0.7em;
+    margin-left: 2px;
+  }
+  #currentgame h2{
+    font-size: smaller;
+  }
+  .key-container{
+    margin-top:20px;
+  }
+  #activegameslist,#invitationslist{
+    max-height: 160px;
   }
 }
 #completedgames{
@@ -239,9 +272,9 @@ html,*{
 .disabled{
   pointer-events:none;
   cursor: not-allowed;
-  opacity:0.65;
+  opacity:0.35;
 }
-#acceptancemessage,#challengeword2,#btn-accept{
+#acceptancemessage,#challengeword2{
   padding-left:5px;
 }
 
