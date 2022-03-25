@@ -78,7 +78,7 @@ html,*{
   height: 200px;
 }
 .key-board{
-  margin: 0 8px;
+  margin: 0px 0px;
   -webkit-user-select: none;
   user-select: none;
 }
@@ -210,6 +210,10 @@ html,*{
 @media screen and (max-width:700px){
   #games{
     grid-template-columns: 1fr 3fr;
+    grid-template-rows:unset;
+  }
+  #games > div{
+    margin:5px;
   }
   #activegamesandinvitationsreceived{
     grid-column: 1 / 2;
@@ -219,6 +223,9 @@ html,*{
   #currentgameandkeyboard{
     grid-column: 2 / 3;
     grid-row: 1 / 2;  
+  }
+  .key-board{
+    margin:0px 0px;
   }
   .key-container{
     font-size: 0.5em;
@@ -231,9 +238,9 @@ html,*{
     gap:2px;
   }
   .tile{
-    width:42px;
-    height:42px;
-    font-size: smaller;
+    width:25px;
+    height:25px;
+    font-size: 0.5em;
   }
   .key-row button{
     padding: 2px;
