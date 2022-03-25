@@ -76,14 +76,14 @@ const updateactiveGames = async (playerid) => {
       // console.log(e.target.dataset.matchid)
       //get the match data
       matchid = e.target.dataset.matchid
-      opponentid = e.target.dataset.opponentid*1
+      opponentid = e.target.dataset.opponentid * 1
       //remove selectedgama class from all
       const games = [...document.querySelectorAll(`#activegameslist > div`)]
-      games.forEach(game=>game.classList.remove(`selectedgame`))
+      games.forEach(game => game.classList.remove(`selectedgame`))
       e.target.classList.add('selectedgame')
-      await updateMatchGrid(matchid,playerid)
-      const title=document.querySelector('#currentgame > h2')
-      title.textContent=`Current Game (${e.target.innerHTML})`
+      await updateMatchGrid(matchid, playerid)
+      const title = document.querySelector('#currentgame > h2')
+      title.textContent = `Current Game (${e.target.innerHTML})`
     })
     activegameslist.append(el)
   }
@@ -96,14 +96,11 @@ const clearMatchGrid = () => {
     for (let ch = 0; ch < 5; ch++) {
       //identify the column
       rowEls[ch].innerText = ""
-      rowEls[ch].classList.remove('t0')
-      rowEls[ch].classList.remove('t1')
-      rowEls[ch].classList.remove('t2')
-      rowEls[ch].classList.remove('flip')
+      rowEls[ch].classList.remove('t0', 't1', 't2', 'flip')
     }
   }
 }
-const updateMatchGrid = async (matchid,playerid) => {
+const updateMatchGrid = async (matchid, playerid) => {
 
   //clear the old grid
   clearMatchGrid()
@@ -111,7 +108,7 @@ const updateMatchGrid = async (matchid,playerid) => {
   document.getElementById('onlyinputs').style = "visibility:visible"
   //returns an array of all the tries
   const tries = await getTries(matchid, playerid)
-  movesPlayed = tries.length>=6?6:tries.length
+  movesPlayed = tries.length >= 6 ? 6 : tries.length
   for (let atry = 0; atry < movesPlayed; atry++) {
     let row = document.querySelectorAll(`#row${atry + 1} > div`)
     let wordArray = tries[atry].try.split('')
@@ -121,19 +118,20 @@ const updateMatchGrid = async (matchid,playerid) => {
       if (tries[atry].result != null) {
         // console.log(tries[atry].result[ch])
         row[ch].classList.add(`t${tries[atry].result[ch]}`)
-        if(atry==movesPlayed-1){
-          setInterval(()=>{
-            row[ch].classList.add(`flip`)
-          },200+ch*200)
-        }
       }
     }
   }
-  currentRow = movesPlayed==6?6:movesPlayed+1
+  let row = document.querySelectorAll(`#row${movesPlayed} > div`)
+  for (let ch = 1; ch <=5 ; ch++) {
+    setTimeout(() => {
+      row[ch-1].classList.add(`flip`)
+    }, ch * 200)
+  }
+  currentRow = movesPlayed == 6 ? 6 : movesPlayed + 1
   console.log(`Tries made by playerid:${playerid}:${JSON.stringify(tries)},Current Row: ${currentRow}`)
-  document.querySelector('.key-container').display=matchid==0?'none':'block'
+  document.querySelector('.key-container').display = matchid == 0 ? 'none' : 'block'
   updateActiveCell(currentRow)
-  updateKeyBoard(movesPlayed,matchid)
+  updateKeyBoard(movesPlayed, matchid)
 }
 const updatecompletedGames = async (playerid) => {
   const games = await getcompletedGames(playerid)
@@ -240,11 +238,11 @@ for (let i = 0; i < kb_buttons.length; i++) {
           guess += row[ch].innerText
         }
         console.log(matchid, playerid, guess, currentRow)
-        await submitTry(matchid, playerid, guess, currentRow,opponentid)
-        sendMessageMoved(playerid,matchid)
+        await submitTry(matchid, playerid, guess, currentRow, opponentid)
+        sendMessageMoved(playerid, matchid)
         break;
       case 'BACK':
-        currentCol = currentCol==1?currentCol:currentCol-1
+        currentCol = currentCol == 1 ? currentCol : currentCol - 1
         updateActiveCell(currentRow)
         break;
       default:
@@ -272,7 +270,7 @@ window.addEventListener('load', async () => {
     let response = await sendAnOffer(playerid, toPlayer, word)
     console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
     updatePendingInvitations(playerid)
-    sendMessageOffered(response[0].offerid,playerid,toPlayer)
+    sendMessageOffered(response[0].offerid, playerid, toPlayer)
   })
   document.getElementById('btn-accept').addEventListener('click', async () => {
     let offerid = document.querySelector('.selectedinvitation').dataset.offerid * 1
@@ -283,7 +281,7 @@ window.addEventListener('load', async () => {
     console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
     updateactiveGames(playerid)
     updateInvitationsList(playerid)
-    sendMessageAccepted(offerid,playerid,opponentid)
+    sendMessageAccepted(offerid, playerid, opponentid)
   })
   document.getElementById('background').addEventListener('click', () => {
     document.getElementById('backgroundinfo').classList.toggle('hidden')
@@ -414,10 +412,10 @@ window.addEventListener('load', async () => {
   const query = window.location.search
   if (query.includes("code=") && query.includes("state=")) {
 
-    try{
+    try {
       //process the login state
       await auth0.handleRedirectCallback()
-    }catch(err){
+    } catch (err) {
       console.log(`Error in handle redirect: ${err}`)
     }
 
@@ -449,7 +447,7 @@ const updateUI = async () => {
     updatePendingInvitations(playerid)
     setUpSocketListeners(playerid)
     updateActiveCell(currentRow)
-    updateKeyBoard(movesPlayed,matchid)
+    updateKeyBoard(movesPlayed, matchid)
     document.querySelector('#title span').innerText = `${nickname}'s Murdle`
   }
 }
@@ -466,13 +464,13 @@ const updateActiveCell = (row) => {
 
   input.classList.toggle('active')
 }
-const updateKeyBoard = (movesPlayed,matchid) => {
+const updateKeyBoard = (movesPlayed, matchid) => {
   //if moves played is 6 then disable ENTER on keyboard
   const kbEls = [...document.querySelectorAll(`.key-board button`)]
-  if(movesPlayed>=6 || !matchid){
-    kbEls.forEach(kbEl=>kbEl.classList.add('disabled'))
-  }else{
-    kbEls.forEach(kbEl=>kbEl.classList.remove('disabled'))
+  if (movesPlayed >= 6 || !matchid) {
+    kbEls.forEach(kbEl => kbEl.classList.add('disabled'))
+  } else {
+    kbEls.forEach(kbEl => kbEl.classList.remove('disabled'))
   }
 }
 /*
@@ -523,7 +521,7 @@ const displayResults = (heading, details) => {
   resultsEl.style.display = 'block'
 
 }
-export{
+export {
   socket,
   updateMatchGrid,
   updateInvitationsList,

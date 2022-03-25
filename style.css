@@ -50,6 +50,7 @@ html,*{
   color: #e2e2e2;
   width:50px;
   height:50px;
+  transition:none;
 }
 .tile.active{
   border:2px solid red;
@@ -169,6 +170,7 @@ html,*{
 .selectedopponent,.selectedinvitation,.selectedgame{
   border:1px solid blue;
   border-radius: 2px;
+  animation: flip 0.5s linear;
 }
 #invitation > *,#invitationsreceived > *,#activegames > *,
 #players > *,#completedgames > *{
@@ -221,15 +223,6 @@ html,*{
   .key-container{
     font-size: 0.5em;
   }
-  /* #currentgame{
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
-  }
-  .key-container{
-    grid-column: 2 / 3;  
-    grid-row: 2 / 3;
-    font-size: 0.5em;
-  }   */
   #playersandinvitation{
     grid-column: 1 / 3;
     grid-row: 3 / 4;
@@ -247,11 +240,12 @@ html,*{
     margin: 0 2px 0 0;
     height: 38px;
   }
-  #challengeword,#challengeword2{
+  #challengeword2{
     width:30px;
     font-size: 0.7em;
+    padding:0px;
   }
-  #btn-accept,#btn-invite{
+  #btn-accept{
     width:60px;
     font-size: 0.7em;
     margin-left: 2px;
@@ -278,15 +272,30 @@ html,*{
   padding-left:5px;
 }
 
-.flip{
-  animation: flip 1s linear;
+.tile.flip{
+  animation: flip 0.5s ease-in-out;
 }
 
 @keyframes flip{
-  from{
+  0%{
    transform: rotateX(0deg);
  }
-  to{
-    transform: rotateX(360deg);
+  70%{
+    transform: rotateX(180deg);
  }
+  100%{
+    transform: rotateX(0deg);  
+ }
+}
+
+@keyframes pulse{
+  0%{
+    transform:scale(0.9);
+  }
+  70%{
+    transform:scale(1.2)
+  }
+  100%{
+    transform:scale(0.9)
+  }
 }
