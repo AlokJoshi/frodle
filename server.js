@@ -75,7 +75,7 @@ app.get('/api/exists/:word', (req, res) => {
 const server = app.listen(port, () => console.log(`Murdle app listening on port ${port}!`))
 const io = socket(server)
 io.on('connection',(socket)=>{
-  console.log('a user connected');
+  console.log(`The number of connected sockets:${+socket.adapter.sids.size}`)
   socket.on('MSG_MOVED',(data)=>{
     console.log(`player with socket.id of ${socket.id} has moved: data sent back:${JSON.stringify(data)}`)
     io.sockets.emit('MSG_MOVED',data)
@@ -88,7 +88,8 @@ io.on('connection',(socket)=>{
     console.log(`player with socket.id of ${socket.id} has accepted: data sent back:${JSON.stringify(data)}`)
     io.sockets.emit('MSG_ACCEPTED',data)
   })
+  socket.on('disconnecting', () => {
+    console.log(`user disconnected`)
+    console.log(`The number of connected sockets:${+socket.adapter.sids.size}`)
+  })
 })
-io.on('disconnect', () => {
-  console.log('user disconnected');
-});
