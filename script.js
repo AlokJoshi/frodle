@@ -1,7 +1,6 @@
 let auth0 = null;
 let socket = null;
 
-let movesPlayed = 0
 let currentRow = 1
 let currentCol = 1
 //set the picture, nickname and playerid as soon as the player logs in
@@ -108,7 +107,8 @@ const updateMatchGrid = async (matchid, playerid) => {
   document.getElementById('onlyinputs').style = "visibility:visible"
   //returns an array of all the tries
   const tries = await getTries(matchid, playerid)
-  movesPlayed = tries.length >= 6 ? 6 : tries.length
+  let movesPlayed = tries.length >= 6 ? 6 : tries.length
+  let numCorrect = 0
   for (let atry = 0; atry < movesPlayed; atry++) {
     let row = document.querySelectorAll(`#row${atry + 1} > div`)
     let wordArray = tries[atry].try.split('')
@@ -116,22 +116,23 @@ const updateMatchGrid = async (matchid, playerid) => {
       //identify the column
       row[ch].innerText = wordArray[ch]
       if (tries[atry].result != null) {
-        // console.log(tries[atry].result[ch])
-        row[ch].classList.add(`t${tries[atry].result[ch]}`)
+        if(atry==(movesPlayed-1)){
+          numCorrect+=tries[atry].result[ch]==2?1:0
+          setTimeout(() => {
+            row[ch].classList.add(`flip`)
+            row[ch].classList.add(`t${tries[atry].result[ch]}`)
+          }, ch * 200) 
+        }else{
+          row[ch].classList.add(`t${tries[atry].result[ch]}`)
+        }
       }
     }
   }
-  let row = document.querySelectorAll(`#row${movesPlayed} > div`)
-  for (let ch = 1; ch <=5 ; ch++) {
-    setTimeout(() => {
-      row[ch-1].classList.add(`flip`)
-    }, ch * 200)
-  }
-  currentRow = movesPlayed == 6 ? 6 : movesPlayed + 1
+  currentRow = (movesPlayed == 6 || numCorrect==5) ? 0 : movesPlayed + 1
   console.log(`Tries made by playerid:${playerid}:${JSON.stringify(tries)},Current Row: ${currentRow}`)
   document.querySelector('.key-container').display = matchid == 0 ? 'none' : 'block'
   updateActiveCell(currentRow)
-  updateKeyBoard(movesPlayed, matchid)
+  updateKeyBoard(currentRow, matchid)
 }
 const updatecompletedGames = async (playerid) => {
   const games = await getcompletedGames(playerid)
@@ -205,8 +206,8 @@ const updateInvitationsList = async (playerid) => {
 const updatePendingInvitations = async (playerid) => {
   const invitations = await getPendingInvitations(playerid)
   // console.log(invitations)
-  const pendinginvitations = document.getElementById('pendinginvitations')
-  const pendinginvitations_els = [...pendinginvitations.children]
+  const pendinginvitationslist = document.getElementById('pendinginvitationslist')
+  const pendinginvitations_els = [...pendinginvitationslist.children]
   if (pendinginvitations_els.length > 0) {
     pendinginvitations_els.forEach(child => {
       child.remove()
@@ -217,7 +218,7 @@ const updatePendingInvitations = async (playerid) => {
     let el = document.createElement('div')
     let nickname = invitations[i].nickname.length > 15 ? invitations[i].nickname.substring(0, 12) + '...' : invitations[i].nickname
     el.innerHTML = `#${invitations[i].offerid} ${invitations[i].wordoffer} to ${nickname}`
-    pendinginvitations.append(el)
+    pendinginvitationslist.append(el)
   }
 }
 
@@ -230,16 +231,23 @@ for (let i = 0; i < kb_buttons.length; i++) {
     let row = document.querySelectorAll(`#row${currentRow} > div`)
     switch (e.target.innerText) {
       case 'ENTER':
-        //submit the currentRow and move to the next row
         let guess = ''
-        //let els=(row.NodeList)
         console.log(row)
         for (let ch = 0; ch < row.length; ch++) {
           guess += row[ch].innerText
         }
-        console.log(matchid, playerid, guess, currentRow)
-        await submitTry(matchid, playerid, guess, currentRow, opponentid)
-        sendMessageMoved(playerid, matchid)
+        if(guess.trim().length==5){
+          const status = await existsWord(guess)
+          if(status==200){
+            console.log(matchid, playerid, guess, currentRow)
+            await submitTry(matchid, playerid, guess, currentRow, opponentid)
+            sendMessageMoved(playerid, matchid)
+          }else{
+            alert(`${guess} is not a valid word.`)
+          }
+        }else{
+          alert(`Please select a 5 letter word.`)
+        }
         break;
       case 'BACK':
         currentCol = currentCol == 1 ? currentCol : currentCol - 1
@@ -447,7 +455,7 @@ const updateUI = async () => {
     updatePendingInvitations(playerid)
     setUpSocketListeners(playerid)
     updateActiveCell(currentRow)
-    updateKeyBoard(movesPlayed, matchid)
+    updateKeyBoard(currentRow, matchid)
     document.querySelector('#title span').innerText = `${nickname}'s Murdle`
   }
 }
@@ -459,15 +467,16 @@ const updateActiveCell = (row) => {
 
   //here we should set the currentRow and currentCol after the user
   //clicks or otherwise starts a new game
-  let rowEls = document.querySelectorAll(`#row${row} > div`)
-  let input = rowEls[currentCol - 1]
-
-  input.classList.toggle('active')
+  if(row!=0){
+    let rowEls = document.querySelectorAll(`#row${row} > div`)
+    let input = rowEls[currentCol - 1]
+    input.classList.toggle('active')
+  }
 }
-const updateKeyBoard = (movesPlayed, matchid) => {
+const updateKeyBoard = (currentRow, matchid) => {
   //if moves played is 6 then disable ENTER on keyboard
   const kbEls = [...document.querySelectorAll(`.key-board button`)]
-  if (movesPlayed >= 6 || !matchid) {
+  if (currentRow==0 || !matchid) {
     kbEls.forEach(kbEl => kbEl.classList.add('disabled'))
   } else {
     kbEls.forEach(kbEl => kbEl.classList.remove('disabled'))

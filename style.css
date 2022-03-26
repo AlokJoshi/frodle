@@ -35,26 +35,47 @@ html,*{
   caret-color:transparent;
   font-weight: bold;
 }
-
+#activegames{
+  grid-area: activegames;
+}
+#currentgameandkeyboard{
+  grid-area: currentgameandkeyboard;
+}
+#players{
+  grid-area: players;
+}
+#pendinginvitations{
+  grid-area: pendinginvitations;
+}
+#invitationmessageandword{
+  grid-area: invitationmessageandword;
+}
+#completedgames{
+  grid-area: completedgames;
+}
 #games{
   border:1px solid #e2e2e2;
   display:grid;
   grid-template-columns: 1fr 2fr 1fr;
-  grid-template-rows: 600px;
+  grid-template-rows: 400px;
+  grid-template-areas: 
+  "activegames currentgameandkeyboard players"
+  "invitationsreceived currentgameandkeyboard invitationmessageandword"
+  "wordwhileacceptinginvitation completedgames pendinginvitations";
 }
 #games > div{
   margin:10px;
 }
 .tile{
   border:1px solid #e2e2e2;
-  color: #e2e2e2;
   width:50px;
   height:50px;
+  color:#e2e2e2;
   transition:none;
 }
 .tile.active{
-  border:2px solid red;
-  border-radius: 5px;
+  border:3px solid e2e2e2;
+  border-radius: 3px;
 }
 /* .row{
   display:grid;
@@ -124,12 +145,13 @@ html,*{
   width: 100%;
   margin-bottom: 10px;
   gap: 11px;
+  justify-content: center;
 }
 #activegameslist>div{
   cursor:pointer;
 }
 .t0{
-  background:#020202;
+  background:#2e2e2e;
   color:#e2e2e2;
 }
 .t1{
@@ -148,7 +170,7 @@ html,*{
   overflow-y:scroll;
   overflow-x:hidden;
 }
-#pendinginvitations,#invitationslist{
+#pendinginvitationslist,#invitationslist{
   max-height: 210px;
   overflow-y:scroll;
   overflow-x:hidden;
@@ -172,7 +194,7 @@ html,*{
   border-radius: 2px;
   animation: flip 0.5s linear;
 }
-#invitation > *,#invitationsreceived > *,#activegames > *,
+#pendinginvitations > *,#invitationsreceived > *,#activegames > *,
 #players > *,#completedgames > *{
   margin:2px;
   padding:2px;
@@ -190,64 +212,61 @@ html,*{
   padding: 10px;
   display:none;
 }
-#activegamesandinvitationsreceived{
-  grid-column: 1 / 2;
-  grid-row: 1 / 3;
-}
-#playersandinvitation{
-  grid-column: 3 / 4;
-  grid-row: 1 / 3; 
-}
-#activegames,.key-container{
-  grid-column: 2 / 3;  
-}
 #activegames,#invitationsreceived,#wordwhileacceptinginvitation,#players
-,#invitation,#invitationmessageandword, #completedgames{
+,#pendinginvitations,#invitationmessageandword, #completedgames{
   padding:5px;
   border:2px solid beige;
   border-radius: 5px;
 }
 @media screen and (max-width:700px){
   #games{
-    grid-template-columns: 1fr 3fr;
-    grid-template-rows:unset;
+    display:grid;
+    grid-template-columns: 1fr;
+    grid-template-rows:minmax(200px,auto);
+    grid-template-areas:
+    "activegames"
+    "currentgameandkeyboard"
+    "currentgameandkeyboard"
+    "invitationsreceived"
+    "wordwhileacceptinginvitation"
+    "players"
+    "invitationmessageandword"
+    "pendinginvitations"
+    "completedgames"
   }
   #games > div{
     margin:5px;
   }
-  #activegamesandinvitationsreceived{
-    grid-column: 1 / 2;
-    grid-row: 1 / 2;
-    font-size:smaller;
+  /* #activegames{
+    grid-area:activegames;
   }
   #currentgameandkeyboard{
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;  
+    grid-area:currentgameandkeyboard;
   }
+  #invitationsreceived{
+    grid-area: invitationsreceived;
+  } */
+  
   .key-board{
     margin:0px 0px;
   }
   .key-container{
     font-size: 0.5em;
   }
-  #playersandinvitation{
-    grid-column: 1 / 3;
-    grid-row: 3 / 4;
-  }
   .row{
     gap:2px;
   }
   .tile{
-    width:25px;
-    height:25px;
-    font-size: 0.5em;
+    width:45px;
+    height:45px;
+    font-size: 0.7em;
   }
   .key-row button{
     padding: 2px;
     margin: 0 2px 0 0;
     height: 38px;
   }
-  #challengeword2{
+  /* #challengeword2{
     width:30px;
     font-size: 0.7em;
     padding:0px;
@@ -256,7 +275,7 @@ html,*{
     width:60px;
     font-size: 0.7em;
     margin-left: 2px;
-  }
+  } */
   #currentgame h2{
     font-size: smaller;
   }
