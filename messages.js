@@ -1,5 +1,5 @@
 import { socket,updateMatchGrid,updateInvitationsList,
-  updatePendingInvitations,updateactiveGames } from "./script.js"
+  updatePendingInvitations,updateactiveGames,updatecompletedGames } from "./script.js"
 
 const MSG_MOVED='MSG_MOVED'
 const MSG_OFFERED='MSG_OFFERED'
@@ -31,6 +31,8 @@ const setUpSocketListeners=(playerid)=>{
     console.log(`MSG_MOVED received ${JSON.stringify(data)}`)
     if(data.playerid == playerid){
       await updateMatchGrid(data.matchid,playerid)
+      await updateactiveGames(playerid)
+      await updatecompletedGames(playerid)
     }
   })
   socket.on(MSG_OFFERED,async (data)=>{

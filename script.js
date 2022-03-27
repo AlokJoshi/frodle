@@ -136,7 +136,8 @@ const updateMatchGrid = async (matchid, playerid) => {
 }
 const updatecompletedGames = async (playerid) => {
   const games = await getcompletedGames(playerid)
-  //console.log(games)
+  console.log(`Completed games:`)
+  console.log(JSON.stringify(games))
   const completedgames = document.getElementById('completedgameslist')
   const completedgames_els = [...completedgames.children]
   if (completedgames_els.length > 0) {
@@ -149,13 +150,30 @@ const updatecompletedGames = async (playerid) => {
     let el = document.createElement('div')
     //decide on text
     let txt = ''
-    if (games[i].mytrynumber < games[i].opptrynumber) {
-      txt = `#${games[i].matchid} You won: ${games[i].mytrynumber}-${games[i].opptrynumber} vs ${games[i].nickname}`
-    } else if (games[i].mytrynumber > games[i].opptrynumber) {
-      txt = `#${games[i].matchid} You lost: ${games[i].mytrynumber}-${games[i].opptrynumber} vs ${games[i].nickname}`
-    } else {
-      txt = `#${games[i].matchid} You drew: ${games[i].mytrynumber}-${games[i].opptrynumber} vs ${games[i].nickname}`
+    let id = games[i].id
+    let myTries = games[i].mytries
+    let oppTries = games[i].opptries
+    let meDone= games[i].medone
+    let oppDone= games[i].oppdone
+    let nickname= games[i].nickname
+    if(meDone && oppDone){
+      if (myTries < oppTries) {
+        txt = `#${id} You won: ${myTries} to ${oppTries} vs ${nickname}`
+      } else if (myTries > oppTries) {
+        txt = `#${id} You lost: ${myTries} to ${oppTries} vs ${nickname}`
+      } else{
+        txt = `#${id} You drew: ${myTries} to ${oppTries} vs ${nickname}`  
+      }  
     }
+    if (meDone && !oppDone && (myTries <= oppTries)) {
+      txt = `#${id} You won: ${myTries} to +${oppTries} vs ${nickname}`
+    } 
+    if (oppDone && !meDone && (myTries >= oppTries)) {
+      txt = `#${id} You lost: +${myTries} to ${oppTries} vs ${nickname}`
+    } 
+    if (!oppDone && !meDone && (myTries == 6) && (oppTries == 6)) {
+      txt = `#${id} You drew: ${myTries} to ${oppTries} vs ${nickname}`
+    } 
 
     el.innerHTML = txt
     completedgames.append(el)
@@ -535,5 +553,6 @@ export {
   updateMatchGrid,
   updateInvitationsList,
   updateactiveGames,
-  updatePendingInvitations
+  updatePendingInvitations,
+  updatecompletedGames
 }
