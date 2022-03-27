@@ -17,6 +17,7 @@ let knex = require('knex')({
     port: process.env.DB_PORT,
     ssl:{rejectUnauthorized:false}
   },
+  pool: { min: 0, max: 7 }
 });
 
 knex.raw("SELECT 1;").then(() => {

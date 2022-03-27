@@ -5,7 +5,7 @@ async function getactiveGames(playerid) {
     return json
   } catch (err) {
     console.log(`Error in /api/matches/active/${playerid}`)
-    new Error(`Error in /api/matches/active/${playerid}`)
+    // new Error(`Error in /api/matches/active/${playerid}`)
   }
 }
 async function getcompletedGames(playerid) {
@@ -15,17 +15,18 @@ async function getcompletedGames(playerid) {
     return json
   } catch (err) {
     console.log(`Error in /api/matches/completed/${playerid}`)
-    new Error(`Error in /api/matches/completed/${playerid}`)
+    // new Error(`Error in /api/matches/completed/${playerid}`)
   }
 }
 async function getUser(email) {
   try {
     const response = await fetch(`/api/users/${email}`)
     const json = await response.json()
+    console.log(`User returned in getUser:${json}`)
     return json
   } catch (err) {
     console.log(`Error in /api/users/${playerid}`)
-    new Error(`Error in /api/users/${playerid}`)
+    // new Error(`Error in /api/users/${playerid}`)
   }
 }
 async function createUser(email, nickname) {
@@ -40,7 +41,7 @@ async function createUser(email, nickname) {
         nickname: nickname
       })
     })
-    const json = await response()
+    const json = await response.json()
     return json
   } catch (err) {
     console.log('Error in createUser')
@@ -50,7 +51,7 @@ async function createUser(email, nickname) {
 async function createUserIfNeeded(email, nickname) {
   try{
     let users = await getUser(email)
-    if (users) {
+    if (users.length>0) {
       return users[0].playerid
     } else {
       //user does not exist
@@ -68,7 +69,7 @@ async function getTries(matchid, playerid) {
     return json
   } catch (err) {
     console.log(`Error in getTries`)
-    new Error(`Error in getTries`)
+    // new Error(`Error in getTries`)
   }
 }
 async function getPlayers(playerid) {
@@ -79,7 +80,7 @@ async function getPlayers(playerid) {
     return json
   } catch (err) {
     console.log(`Error in getPlayers`)
-    new Error(`Error in getPlayers`)
+    // new Error(`Error in getPlayers`)
   }
 }
 async function submitTry(matchid, playerid, atry, trynumber, opponentid) {
@@ -103,7 +104,7 @@ async function submitTry(matchid, playerid, atry, trynumber, opponentid) {
 
   } catch (err) {
     console.log(`Error in submitTry`)
-    new Error(`Error in submitTry`)
+    // new Error(`Error in submitTry`)
   }
 }
 async function existsWord(word) {
@@ -116,7 +117,7 @@ async function existsWord(word) {
     return response.status
   } catch (err) {
     console.log(`Error in existsWord`)
-    new Error(`Error in existsWord`)
+    // new Error(`Error in existsWord`)
   }
 }
 async function sendAnOffer(fromplayer, toplayer, wordoffer) {
@@ -138,7 +139,7 @@ async function sendAnOffer(fromplayer, toplayer, wordoffer) {
 
   } catch (err) {
     console.log(`Error in sendAnOffer`)
-    new Error(`Error in sendAnOffer`)
+    // new Error(`Error in sendAnOffer`)
   }
 }
 async function acceptAnOffer(playerid, offerid, wordaccept) {
@@ -161,7 +162,7 @@ async function acceptAnOffer(playerid, offerid, wordaccept) {
 
   } catch (err) {
     console.log(`Error in acceptAnOffer`)
-    new Error(`Error in acceptAnOffer`)
+    // new Error(`Error in acceptAnOffer`)
   }
 }
 async function getInvitations(playerid) {
@@ -171,7 +172,7 @@ async function getInvitations(playerid) {
     return json
   } catch (err) {
     console.log(`Error in getInvitations`)
-    new Error(`Error in getInvitations`)
+    // new Error(`Error in getInvitations`)
   }
 }
 async function getPendingInvitations(playerid) {
@@ -181,7 +182,7 @@ async function getPendingInvitations(playerid) {
     return json
   } catch (err) {
     console.log(`Error in getPendingInvitations`)
-    new Error(`Error in getPendingInvitations`)
+    // new Error(`Error in getPendingInvitations`)
   }
 }
 export {
