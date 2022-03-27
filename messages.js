@@ -45,7 +45,7 @@ const setUpSocketListeners=(playerid)=>{
   })
   socket.on(MSG_ACCEPTED,async (data)=>{
     //do something when the message is received back
-    console.log(`message accepted received: ${JSON.stringify(data)}`)
+    console.log(`message accepted received by playerid:${playerid}: ${JSON.stringify(data)}`)
     if(data.fromplayer == playerid || data.toplayer == playerid){
       await updateInvitationsList(playerid)
       await updatePendingInvitations(playerid)

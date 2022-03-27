@@ -44,14 +44,17 @@ function getAllMatches(req, res) {
 function getAllActiveMatches(req, res) {
   let playerid = req.params.playerid
   //console.log(`In getAllActiveMatches, playerid:${playerid}`)
+  let condition = `
+  (("myMatch".playerdone = false and "oppMatch".playerdone = false and ("myMatch".trynumber < 6 or "oppMatch".trynumber < 6))
+    OR ("myMatch".playerdone = true and "oppMatch".playerdone = false and "myMatch".trynumber > "oppMatch".trynumber)
+    OR ("myMatch".playerdone = false and "oppMatch".playerdone = true and "myMatch".trynumber < "oppMatch".trynumber))
+  `
   knex('fr_match_details as myMatch')
   .innerJoin('fr_match_details as oppMatch',{'myMatch.matchid':'oppMatch.matchid'})
   .innerJoin('fr_players',{'oppMatch.playerid':'fr_players.playerid'})
-  .where(knex.raw('(("myMatch".playerdone = false and "myMatch".trynumber<6) or ("oppMatch".playerdone = false and "oppMatch".trynumber<6))'))
-  .andWhere(knex.raw('(("myMatch".playerdone = true and "oppMatch".playerdone = false and "myMatch".trynumber > "oppMatch".trynumber))'))
-  .andWhere(knex.raw('(("myMatch".playerdone = false and "oppMatch".playerdone = true and "myMatch".trynumber < "oppMatch".trynumber))'))
+  .where(knex.raw(`"myMatch"."matchdetailsid" <> "oppMatch"."matchdetailsid"`))
   .andWhere('myMatch.playerid',playerid)
-  .andWhere(knex.raw(`"myMatch"."matchdetailsid" <> "oppMatch"."matchdetailsid"`))
+  .andWhere(knex.raw(condition))
   .select('myMatch.*','oppMatch.*','nickname as opponent')
   .orderBy('myMatch.matchid','desc')
   // .on('query',(q)=>console.log(q.sql))
