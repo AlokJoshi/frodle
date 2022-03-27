@@ -259,7 +259,7 @@ for (let i = 0; i < kb_buttons.length; i++) {
           if(status==200){
             console.log(matchid, playerid, guess, currentRow)
             await submitTry(matchid, playerid, guess, currentRow, opponentid)
-            sendMessageMoved(playerid, matchid)
+            sendMessageMoved(playerid, opponentid, matchid)
           }else{
             alert(`${guess} is not a valid word.`)
           }

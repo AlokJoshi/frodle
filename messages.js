@@ -5,9 +5,10 @@ const MSG_MOVED='MSG_MOVED'
 const MSG_OFFERED='MSG_OFFERED'
 const MSG_ACCEPTED='MSG_ACCEPTED'
 
-const sendMessageMoved = (playerid,matchid)=>{
+const sendMessageMoved = (playerid,opponentid,matchid)=>{
   socket.emit(MSG_MOVED,{
     playerid,
+    opponentid,
     matchid
   })  
 }
@@ -31,9 +32,10 @@ const setUpSocketListeners=(playerid)=>{
     console.log(`MSG_MOVED received ${JSON.stringify(data)}`)
     if(data.playerid == playerid){
       await updateMatchGrid(data.matchid,playerid)
-      await updateactiveGames(playerid)
-      await updatecompletedGames(playerid)
     }
+    if(data.playerid == playerid || data.opponentid == playerid)
+    await updateactiveGames(playerid)
+    await updatecompletedGames(playerid)
   })
   socket.on(MSG_OFFERED,async (data)=>{
     //do something when the message offred is received back
