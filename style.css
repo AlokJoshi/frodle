@@ -15,6 +15,10 @@ html,*{
   padding-top: 5px;
   padding-bottom: 5px;
 }
+input,button{
+  padding-left: 5px;
+  padding-right: 5px;
+}
 #background:hover{
   cursor: pointer;
 }
@@ -30,6 +34,10 @@ html,*{
 }
 #backgroundinfo p:nth-of-type(even){
   background-color: beige;
+}
+ol {
+  list-style-type: lower-alpha;
+  list-style-position: inside;
 }
 .hidden{
   display:none;
@@ -57,6 +65,15 @@ html,*{
 #invitationmessageandword{
   grid-area: invitationmessageandword;
 }
+#invitationmessageandword>*{
+  margin-top: 5px;
+}
+#acceptchallengeword{
+  grid-area: acceptchallengeword;
+}
+#acceptchallengeword>*{
+  margin-top: 5px;
+}
 #completedgames{
   grid-area: completedgames;
 }
@@ -68,7 +85,7 @@ html,*{
   grid-template-areas: 
   "activegames currentgameandkeyboard players"
   "invitationsreceived currentgameandkeyboard invitationmessageandword"
-  "wordwhileacceptinginvitation completedgames pendinginvitations";
+  "acceptchallengeword completedgames pendinginvitations";
 }
 #games > div{
   margin:10px;
@@ -219,7 +236,7 @@ html,*{
   padding: 10px;
   display:none;
 }
-#activegames,#invitationsreceived,#wordwhileacceptinginvitation,#players
+#activegames,#invitationsreceived,#acceptchallengeword,#players
 ,#pendinginvitations,#invitationmessageandword, #completedgames{
   padding:5px;
   border:2px solid beige;
@@ -235,7 +252,7 @@ html,*{
     "currentgameandkeyboard"
     "currentgameandkeyboard"
     "invitationsreceived"
-    "wordwhileacceptinginvitation"
+    "acceptchallengeword"
     "players"
     "invitationmessageandword"
     "pendinginvitations"
@@ -301,9 +318,9 @@ html,*{
   cursor: not-allowed;
   opacity:0.35;
 }
-#acceptancemessage,#challengeword2{
+/* #acceptancemessage,#challengeword2{
   padding-left:5px;
-}
+} */
 
 .tile.flip{
   animation: flip 0.5s ease-in-out;

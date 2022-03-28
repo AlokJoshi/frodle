@@ -18,7 +18,7 @@
     <button id="btn-login" disabled="true">Log in</button>
     <button id="btn-logout" disabled="true">Log out</button>
   </div>
-  <div id="background">How does it work?</div>
+  <div id="background" style="text-decoration: underline;">How does it work?</div>
   <div id="backgroundinfo" class="hidden">
     <p>It is just Wordle with friends. It goes like this..</p>
     <p>You invite a friend over to play with you.</p>
@@ -33,9 +33,9 @@
     <p>Obviously the loser of the first game does not give up that easily. </p>
     <p>So you have a rematch. </p>
     <p>The loser of the second game also does not give up easily so you have another game. </p>
-    <p>This game goes on and on till the you play so many games that the
+    <p>This game goes on and on till you play so many games that the
       game database has no space left for storing the game results
-      or till you run out of your limited knowledge of 5 letter words or if so many millions
+      or till you run out of your limited knowledge of 5 letter words or if many millions
       start playing this game to bring down this web site and the internet or if the sun explodes
       and becomes a quasar (is that even possible? Dont ask me I am just a programmer).
       If you have had enough with this ridiculous background just click on the register
@@ -43,11 +43,28 @@
       then just log in and start playing. </p>
     <p>Well you ask 'I have already registered and logged in but I cannot find my friend?'</p>
     <p>That is a very good question.</p>
-    <p>Get your friend to also register and log in and then you will see him in the friends section.</p>
-    <p>By the way you will continue to see him in the friends section even if you have lost to him so many
-      times that you do not consider him your friend any more!! Etiquette dictates you just ignore him and
-      find a weaker friend you can beat!!
+    <p>Get your friend to also register and log in and then you will see him in the 'Other Murdlers' section.</p>
+    <p>By the way you will continue to see him in the 'Other Murdlers' section even if you have lost to him so many
+      times that you do not want to see him any more!! Etiquette dictates you just ignore him and
+      find a weaker Murdler you can beat!!
     </p>
+    <p><strong>Seriously speaking the game goes like this..</strong></p>
+    <ol>
+      <li>You click on the login button and select Sign Up to register on the web site</li>
+      <li>Now log in if needed</li>
+      <li>You should see other players in the Other Murdlers section.</li>
+      <li>Click on the players to select who you want to play with.</li>
+      <li>Now select a 5 letter word for your opponent in the 'Word for' section and click on the Invite button.</li>
+      <li>Your opponent will immediately see your invitation pop up in the 'Invitations to play' section on his screen.
+      </li>
+      <li>Your opponent will select you from amongst the invitations he/she has received and select a 5 letter word for
+        you and click on Accept Invite button.</li>
+      <li>After this you and your opponent should both see a game listed in 'Current Games' section.</li>
+      <li>Click on the game and start playing.</li>
+      <li>The result will appear in the 'Completed Games' section as soon as the match is over.</li>
+      <li>Note that for solving game you will use the on-screen keyboard but for sending your word with the invitation
+        and accepting the invitation with your own word you will be using the device keyboard.</li>
+    </ol>
   </div>
   </div>
   <div id="games">
@@ -59,9 +76,11 @@
       <h2>Invitations to play</h2>
       <div id="invitationslist"></div>
     </div>
-    <div id="wordwhileacceptinginvitation">
+    <div id="acceptchallengeword">
+      <h2>Accept Challenge Word</h2>
       <h2 id="acceptancemessage">Word for</h2>
       <input id="challengeword2" class="invalid" value="XXXXX" maxlength="5" minlength="5">
+      <br>
       <button id="btn-accept" disabled>Accept Invite</button>
     </div>
     <div id="currentgameandkeyboard">
@@ -115,17 +134,18 @@
       <div class="key-container">
         <div class="key-board">
           <div class="key-row"><button class="">Q</button><button class="">W</button><button class="">E</button><button
-              class="">R</button><button class="">T</button><button class="">Y</button><button class="">U</button><button
-              class="">I</button><button class="">O</button><button class="">P</button></div>
+              class="">R</button><button class="">T</button><button class="">Y</button><button
+              class="">U</button><button class="">I</button><button class="">O</button><button class="">P</button></div>
           <div class="key-row">
             <div class="left-space"></div><button class="">A</button><button class="">S</button><button
-              class="">D</button><button class="">F</button><button class="">G</button><button class="">H</button><button
-              class="">J</button><button class="">K</button><button class="">L</button>
+              class="">D</button><button class="">F</button><button class="">G</button><button
+              class="">H</button><button class="">J</button><button class="">K</button><button class="">L</button>
             <div class="left-space"></div>
           </div>
           <div class="key-row"><button class="">BACK</button><button class="">Z</button><button
-              class="">X</button><button class="">C</button><button class="">V</button><button class="">B</button><button
-              class="">N</button><button class="">M</button><button class="">ENTER</button></div>
+              class="">X</button><button class="">C</button><button class="">V</button><button
+              class="">B</button><button class="">N</button><button class="">M</button><button class="">ENTER</button>
+          </div>
         </div>
       </div>
     </div>
@@ -134,12 +154,13 @@
       <div id="playerslist"></div>
     </div>
     <div id="invitationmessageandword">
+      <h2>Invite Challenge Word</h2>
       <h2 id="invitationmessage">Word for</h2>
       <input id="challengeword" class="invalid" value="XXXXX" maxlength="5" minlength="5">
+      <br>
       <button id="btn-invite" disabled>Invite</button>
     </div>
     <div id="pendinginvitations">
-      <br>
       <h2>Pending Invitations</h2>
       <div id="pendinginvitationslist"></div>
     </div>
