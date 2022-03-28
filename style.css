@@ -205,7 +205,7 @@ ol {
   cursor:pointer;
 }
 #challengeword,#challengeword2{
-  width:60px;
+  width:70px;
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -295,7 +295,7 @@ ol {
     padding:0px;
   }
   #btn-accept{
-    width:60px;
+    width:70px;
     font-size: 0.7em;
     margin-left: 2px;
   } */
@@ -355,9 +355,7 @@ ol {
 .lost{
   background-color: rosybrown;
 }
-.drew{
 
-}
 /* section headings */
 .sectionheading{
   background-color: beige;

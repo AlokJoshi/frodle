@@ -136,8 +136,6 @@ const updateMatchGrid = async (matchid, playerid) => {
 }
 const updatecompletedGames = async (playerid) => {
   const games = await getcompletedGames(playerid)
-  console.log(`Completed games:`)
-  console.log(JSON.stringify(games))
   const completedgames = document.getElementById('completedgameslist')
   const completedgames_els = [...completedgames.children]
   if (completedgames_els.length > 0) {
@@ -153,32 +151,35 @@ const updatecompletedGames = async (playerid) => {
     let id = games[i].id
     let myTries = games[i].mytries
     let oppTries = games[i].opptries
+    let myword = games[i].myword
+    let oppword = games[i].oppword
     let meDone= games[i].medone
     let oppDone= games[i].oppdone
     let nickname= games[i].nickname
+
     let completedclass=""
     if(meDone && oppDone){
       if (myTries < oppTries) {
-        txt = `#${id} You won: ${myTries} to ${oppTries} vs ${nickname}`
+        txt = `#${id} You (${myword}) won: ${myTries} to ${oppTries} vs ${nickname} (${oppword})`
         completedclass="won"
       } else if (myTries > oppTries) {
-        txt = `#${id} You lost: ${myTries} to ${oppTries} vs ${nickname}`
+        txt = `#${id} You (${myword}) lost: ${myTries} to ${oppTries} vs ${nickname} (${oppword})`
         completedclass="lost"
       } else{
-        txt = `#${id} You drew: ${myTries} to ${oppTries} vs ${nickname}`  
+        txt = `#${id} You (${myword}) drew: ${myTries} to ${oppTries} vs ${nickname} (${oppword})`  
         completedclass="drew"
       }  
     }
     if (meDone && !oppDone && (myTries <= oppTries)) {
-      txt = `#${id} You won: ${myTries} to +${oppTries} vs ${nickname}`
+      txt = `#${id} You (${myword}) won: ${myTries} to +${oppTries} vs ${nickname} (${oppword})`
       completedclass="won"
     } 
     if (oppDone && !meDone && (myTries >= oppTries)) {
-      txt = `#${id} You lost: +${myTries} to ${oppTries} vs ${nickname}`
+      txt = `#${id} You (${myword}) lost: +${myTries} to ${oppTries} vs ${nickname} (${oppword})`
       completedclass="lost"
     } 
     if (!oppDone && !meDone && (myTries == 6) && (oppTries == 6)) {
-      txt = `#${id} You drew: ${myTries} to ${oppTries} vs ${nickname}`
+      txt = `#${id} You (${myword}) drew: ${myTries} to ${oppTries} vs ${nickname} (${oppword})`
       completedclass="drew"
     } 
 

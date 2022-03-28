@@ -77,6 +77,8 @@ function getAllCompletedMatches(req,res){
     Select matches.id , 
     "myMatch"."trynumber" as mytries,
     "oppMatch"."trynumber" as opptries,
+    "myMatch"."playerword" as myword,
+    "oppMatch"."playerword" as oppword,
     "myMatch"."playerdone" as medone,
     "oppMatch"."playerdone" as oppdone,
     "oppPlayer"."nickname"
