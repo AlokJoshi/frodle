@@ -348,3 +348,24 @@ ol {
     transform:scale(0.9)
   }
 }
+/* Completed game classes */
+.won{
+  background-color: greenyellow;
+}
+.lost{
+  background-color: rosybrown;
+}
+.drew{
+
+}
+/* section headings */
+.sectionheading{
+  background-color: beige;
+  border-radius: 5px;
+  text-align: center;
+}
+#completedgameslist>*{
+  border:1px solid #e2e2e2;
+  border-radius: 3px;
+  margin-top: 1px;
+}

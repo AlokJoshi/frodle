@@ -156,26 +156,34 @@ const updatecompletedGames = async (playerid) => {
     let meDone= games[i].medone
     let oppDone= games[i].oppdone
     let nickname= games[i].nickname
+    let completedclass=""
     if(meDone && oppDone){
       if (myTries < oppTries) {
         txt = `#${id} You won: ${myTries} to ${oppTries} vs ${nickname}`
+        completedclass="won"
       } else if (myTries > oppTries) {
         txt = `#${id} You lost: ${myTries} to ${oppTries} vs ${nickname}`
+        completedclass="lost"
       } else{
         txt = `#${id} You drew: ${myTries} to ${oppTries} vs ${nickname}`  
+        completedclass="drew"
       }  
     }
     if (meDone && !oppDone && (myTries <= oppTries)) {
       txt = `#${id} You won: ${myTries} to +${oppTries} vs ${nickname}`
+      completedclass="won"
     } 
     if (oppDone && !meDone && (myTries >= oppTries)) {
       txt = `#${id} You lost: +${myTries} to ${oppTries} vs ${nickname}`
+      completedclass="lost"
     } 
     if (!oppDone && !meDone && (myTries == 6) && (oppTries == 6)) {
       txt = `#${id} You drew: ${myTries} to ${oppTries} vs ${nickname}`
+      completedclass="drew"
     } 
 
     el.innerHTML = txt
+    el.classList.add(completedclass)
     completedgames.append(el)
   }
 
