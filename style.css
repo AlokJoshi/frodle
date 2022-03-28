@@ -25,6 +25,9 @@ html,*{
   cursor:not-allowed;
   color:#e2e2e2;
 }
+#backgroundinfo{
+  padding:7px;
+}
 #backgroundinfo p:nth-of-type(even){
   background-color: beige;
 }
