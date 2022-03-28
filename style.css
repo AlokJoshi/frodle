@@ -11,6 +11,9 @@ html,*{
   color: #e2e2e2;
   text-align: center;
   font-size: large;
+  margin: 6px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 #background:hover{
   cursor: pointer;
