@@ -166,13 +166,13 @@ html,*{
 #playersandinvitation{
   display:grid;  
 }
-#playerslist,#activegameslist,#invitationslist{
-  max-height: 210px;
+#playerslist,#activegameslist{
+  height: 335px;
   overflow-y:scroll;
   overflow-x:hidden;
 }
 #pendinginvitationslist,#invitationslist{
-  max-height: 210px;
+  height: 210px;
   overflow-y:scroll;
   overflow-x:hidden;
 }
