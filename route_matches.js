@@ -89,12 +89,11 @@ function getAllCompletedMatches(req,res){
           ("myMatch".playerdone = true and "oppMatch".playerdone = true)
       OR ("myMatch".playerdone = true and "oppMatch".playerdone = false and "myMatch".trynumber <= "oppMatch".trynumber)
       OR ("myMatch".playerdone = false and "oppMatch".playerdone = true and "myMatch".trynumber >= "oppMatch".trynumber)
-      OR ("myMatch".playerdone = true and "oppMatch".playerdone = true and "myMatch".trynumber = "oppMatch".trynumber)
       OR ("myMatch".playerdone = false and "oppMatch".playerdone = false and "myMatch".trynumber = 6 and
           "oppMatch".trynumber = 6))
   `
   knex.raw(query,[playerid,playerid])
-  .on('query',q=>console.log(q.sql))
+  // .on('query',q=>console.log(q.sql))
   .then(data=>{
       res.json(data.rows)
   })
