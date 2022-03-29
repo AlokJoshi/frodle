@@ -103,6 +103,7 @@ const updateMatchGrid = async (matchid, playerid) => {
 
   //clear the old grid
   clearMatchGrid()
+  resetKeyBoard()
 
   document.getElementById('onlyinputs').style = "visibility:visible"
   //returns an array of all the tries
@@ -111,6 +112,7 @@ const updateMatchGrid = async (matchid, playerid) => {
   let numCorrect = 0
   for (let atry = 0; atry < movesPlayed; atry++) {
     let row = document.querySelectorAll(`#row${atry + 1} > div`)
+    setUsedClass(tries[atry].try)
     let wordArray = tries[atry].try.split('')
     for (let ch = 0; ch < wordArray.length; ch++) {
       //identify the column
@@ -259,7 +261,6 @@ for (let i = 0; i < kb_buttons.length; i++) {
     switch (e.target.innerText) {
       case 'ENTER':
         let guess = ''
-        console.log(row)
         for (let ch = 0; ch < row.length; ch++) {
           guess += row[ch].innerText
         }
@@ -269,6 +270,7 @@ for (let i = 0; i < kb_buttons.length; i++) {
             console.log(matchid, playerid, guess, currentRow)
             await submitTry(matchid, playerid, guess, currentRow, opponentid)
             sendMessageMoved(playerid, opponentid, matchid)
+            setUsedClass(guess)
           }else{
             alert(`${guess} is not a valid word.`)
           }
@@ -508,6 +510,20 @@ const updateKeyBoard = (currentRow, matchid) => {
   } else {
     kbEls.forEach(kbEl => kbEl.classList.remove('disabled'))
   }
+}
+const resetKeyBoard = () => {
+  //if moves played is 6 then disable ENTER on keyboard
+  const kbEls = [...document.querySelectorAll(`.key-board button`)]
+  kbEls.forEach(kbEl => kbEl.classList.remove('used'))
+}
+const setUsedClass = (word) => {
+  //set class for each key to indicate that the key has been used
+  const buttons = [...document.querySelectorAll('.key-board  button')]
+  const chars = word.split('')
+  chars.forEach(ch=>{
+    const button = buttons.findIndex(e=>e.innerText==ch)
+    buttons[button].classList.add('used')
+  })
 }
 /*
 Original location of login and logout functions
