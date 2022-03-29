@@ -131,7 +131,7 @@ const updateMatchGrid = async (matchid, playerid) => {
     }
   }
   currentRow = (movesPlayed == 6 || numCorrect==5) ? 0 : movesPlayed + 1
-  console.log(`Tries made by playerid:${playerid}:${JSON.stringify(tries)},Current Row: ${currentRow}`)
+  // console.log(`Tries made by playerid:${playerid}:${JSON.stringify(tries)},Current Row: ${currentRow}`)
   document.querySelector('.key-container').display = matchid == 0 ? 'none' : 'block'
   updateActiveCell(currentRow)
   updateKeyBoard(currentRow, matchid)
@@ -267,7 +267,7 @@ for (let i = 0; i < kb_buttons.length; i++) {
         if(guess.trim().length==5){
           const status = await existsWord(guess)
           if(status==200){
-            console.log(matchid, playerid, guess, currentRow)
+            // console.log(matchid, playerid, guess, currentRow)
             await submitTry(matchid, playerid, guess, currentRow, opponentid)
             sendMessageMoved(playerid, opponentid, matchid)
             setUsedClass(guess)

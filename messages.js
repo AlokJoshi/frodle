@@ -29,7 +29,7 @@ const sendMessageAccepted = (offerid,fromplayer,toplayer)=>{
 const setUpSocketListeners=(playerid)=>{
   socket.on(MSG_MOVED,async (data)=>{
     //do something when the message is received back
-    console.log(`MSG_MOVED received ${JSON.stringify(data)}`)
+    // console.log(`MSG_MOVED received ${JSON.stringify(data)}`)
     if(data.playerid == playerid){
       await updateMatchGrid(data.matchid,playerid)
     }
@@ -39,7 +39,7 @@ const setUpSocketListeners=(playerid)=>{
   })
   socket.on(MSG_OFFERED,async (data)=>{
     //do something when the message offred is received back
-    console.log(`message offered received: ${JSON.stringify(data)}`)
+    // console.log(`message offered received: ${JSON.stringify(data)}`)
     if(data.fromplayer == playerid || data.toplayer == playerid){
       await updateInvitationsList(playerid)
       await updatePendingInvitations(playerid)
@@ -47,7 +47,7 @@ const setUpSocketListeners=(playerid)=>{
   })
   socket.on(MSG_ACCEPTED,async (data)=>{
     //do something when the message is received back
-    console.log(`message accepted received by playerid:${playerid}: ${JSON.stringify(data)}`)
+    // console.log(`message accepted received by playerid:${playerid}: ${JSON.stringify(data)}`)
     if(data.fromplayer == playerid || data.toplayer == playerid){
       await updateInvitationsList(playerid)
       await updatePendingInvitations(playerid)
