@@ -27,7 +27,7 @@ input,button{
 }
 #btn-login:disabled,#btn-logout:disabled{
   cursor:not-allowed;
-  color:#e2e2e2;
+  color:#3f3f3f;
 }
 #backgroundinfo{
   padding:7px;
@@ -361,6 +361,8 @@ ol {
   background-color: beige;
   border-radius: 5px;
   text-align: center;
+  display: flex;
+  gap:0.25em;
 }
 #completedgameslist>*{
   border:1px solid #e2e2e2;

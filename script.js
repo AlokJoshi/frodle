@@ -298,6 +298,9 @@ window.addEventListener('load', async () => {
   document.getElementById('btn-results').addEventListener('click', () => {
     document.getElementById('results').style.display = "none"
   })
+  document.getElementById('searchtext').addEventListener('input',async (e)=>{
+    console.log(e)
+  })
   document.getElementById('btn-login').addEventListener('click', login)
   document.getElementById('btn-logout').addEventListener('click', logout)
   document.getElementById('btn-invite').addEventListener('click', async () => {
@@ -374,7 +377,8 @@ window.addEventListener('load', async () => {
   });
   document.addEventListener('keydown', (e) => {
     if (e.target == document.getElementById('challengeword') ||
-      e.target == document.getElementById('challengeword2')) {
+      e.target == document.getElementById('challengeword2') ||
+      e.target == document.getElementById('searchtext')) {
       return
     }
     e.preventDefault()
@@ -391,32 +395,11 @@ window.addEventListener('load', async () => {
         if (currentCol == 0) currentCol = 5
         updateActiveCell(currentRow)
         break;
-      case 'A':
-      case 'B':
-      case 'C':
-      case 'D':
-      case 'E':
-      case 'F':
-      case 'G':
-      case 'H':
-      case 'I':
-      case 'J':
-      case 'K':
-      case 'L':
-      case 'M':
-      case 'N':
-      case 'O':
-      case 'P':
-      case 'Q':
-      case 'R':
-      case 'S':
-      case 'T':
-      case 'U':
-      case 'V':
-      case 'W':
-      case 'X':
-      case 'Y':
-      case 'Z':
+      case 'A':case 'B':case 'C':case 'D':case 'E':case 'F':
+      case 'G':case 'H':case 'I':case 'J':case 'K':case 'L':
+      case 'M':case 'N':case 'O':case 'P':case 'Q':case 'R':
+      case 'S':case 'T':case 'U':case 'V':case 'W':case 'X':
+      case 'Y':case 'Z':
         //identify the input element for entering the clicked letter
         let row = document.getElementById(`row${currentRow}`)
         let input = Array.from(row.childNodes)[currentCol - 1]
