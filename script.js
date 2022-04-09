@@ -192,6 +192,7 @@ const updatecompletedGames = async (playerid) => {
 
 }
 const updatePlayersList = async (playerid) => {
+  const searchtext = document.getElementById("searchtext").value.toLowerCase()
   const plrs = await getPlayers(playerid)
   //console.log(plrs)
   const playerslist = document.getElementById('playerslist')
@@ -203,11 +204,13 @@ const updatePlayersList = async (playerid) => {
   }
 
   for (let i = 0; i < plrs.length; i++) {
-    let el = document.createElement('div')
-    let nickname = plrs[i].nickname.length > 15 ? plrs[i].nickname.substring(0, 12) + '...' : plrs[i].nickname
-    el.innerHTML = nickname
-    el.setAttribute('data-playerid', plrs[i].playerid)
-    playerslist.append(el)
+    if(searchtext=='' ||(plrs[i].nickname.toLowerCase().includes(searchtext))){
+      let el = document.createElement('div')
+      let nickname = plrs[i].nickname.length > 15 ? plrs[i].nickname.substring(0, 12) + '...' : plrs[i].nickname
+      el.innerHTML = nickname
+      el.setAttribute('data-playerid', plrs[i].playerid)
+      playerslist.append(el)
+    }
   }
 
 }
@@ -299,7 +302,7 @@ window.addEventListener('load', async () => {
     document.getElementById('results').style.display = "none"
   })
   document.getElementById('searchtext').addEventListener('input',async (e)=>{
-    console.log(e)
+    updatePlayersList(playerid)
   })
   document.getElementById('btn-login').addEventListener('click', login)
   document.getElementById('btn-logout').addEventListener('click', logout)
