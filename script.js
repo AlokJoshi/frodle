@@ -118,19 +118,19 @@ const updateMatchGrid = async (matchid, playerid) => {
       //identify the column
       row[ch].innerText = wordArray[ch]
       if (tries[atry].result != null) {
-        if(atry==(movesPlayed-1)){
-          numCorrect+=tries[atry].result[ch]==2?1:0
+        if (atry == (movesPlayed - 1)) {
+          numCorrect += tries[atry].result[ch] == 2 ? 1 : 0
           setTimeout(() => {
             row[ch].classList.add(`flip`)
             row[ch].classList.add(`t${tries[atry].result[ch]}`)
-          }, ch * 200) 
-        }else{
+          }, ch * 200)
+        } else {
           row[ch].classList.add(`t${tries[atry].result[ch]}`)
         }
       }
     }
   }
-  currentRow = (movesPlayed == 6 || numCorrect==5) ? 0 : movesPlayed + 1
+  currentRow = (movesPlayed == 6 || numCorrect == 5) ? 0 : movesPlayed + 1
   // console.log(`Tries made by playerid:${playerid}:${JSON.stringify(tries)},Current Row: ${currentRow}`)
   document.querySelector('.key-container').display = matchid == 0 ? 'none' : 'block'
   updateActiveCell(currentRow)
@@ -155,35 +155,35 @@ const updatecompletedGames = async (playerid) => {
     let oppTries = games[i].opptries
     let myword = games[i].myword
     let oppword = games[i].oppword
-    let meDone= games[i].medone
-    let oppDone= games[i].oppdone
-    let nickname= games[i].nickname
+    let meDone = games[i].medone
+    let oppDone = games[i].oppdone
+    let nickname = games[i].nickname
 
-    let completedclass=""
-    if(meDone && oppDone){
+    let completedclass = ""
+    if (meDone && oppDone) {
       if (myTries < oppTries) {
         txt = `#${id} You (${myword}) won: ${myTries} to ${oppTries} vs ${nickname} (${oppword})`
-        completedclass="won"
+        completedclass = "won"
       } else if (myTries > oppTries) {
         txt = `#${id} You (${myword}) lost: ${myTries} to ${oppTries} vs ${nickname} (${oppword})`
-        completedclass="lost"
-      } else{
-        txt = `#${id} You (${myword}) drew: ${myTries} to ${oppTries} vs ${nickname} (${oppword})`  
-        completedclass="drew"
-      }  
+        completedclass = "lost"
+      } else {
+        txt = `#${id} You (${myword}) drew: ${myTries} to ${oppTries} vs ${nickname} (${oppword})`
+        completedclass = "drew"
+      }
     }
     if (meDone && !oppDone && (myTries <= oppTries)) {
       txt = `#${id} You (${myword}) won: ${myTries} to +${oppTries} vs ${nickname} (${oppword})`
-      completedclass="won"
-    } 
+      completedclass = "won"
+    }
     if (oppDone && !meDone && (myTries >= oppTries)) {
       txt = `#${id} You (${myword}) lost: +${myTries} to ${oppTries} vs ${nickname} (${oppword})`
-      completedclass="lost"
-    } 
+      completedclass = "lost"
+    }
     if (!oppDone && !meDone && (myTries == 6) && (oppTries == 6)) {
       txt = `#${id} You (${myword}) drew: ${myTries} to ${oppTries} vs ${nickname} (${oppword})`
-      completedclass="drew"
-    } 
+      completedclass = "drew"
+    }
 
     el.innerHTML = txt
     el.classList.add(completedclass)
@@ -196,43 +196,89 @@ const updatePlayersList = async (playerid) => {
   const plrs = await getPlayers(playerid)
   //console.log(plrs)
   const playerslist = document.getElementById('playerslist')
-  const playerslist_els = [...playerslist.children]
-  if (playerslist_els.length > 0) {
-    playerslist_els.forEach(child => {
-      child.remove()
-    });
-  }
-
+  playerslist.innerHTML = ""
+  let template = document.querySelector('[data-template]')
   for (let i = 0; i < plrs.length; i++) {
-    if(searchtext=='' ||(plrs[i].nickname.toLowerCase().includes(searchtext))){
-      let el = document.createElement('div')
+    if (searchtext == '' || (plrs[i].nickname.toLowerCase().includes(searchtext))) {
+      let player = template.content.cloneNode(true).children[0]
       let nickname = plrs[i].nickname.length > 15 ? plrs[i].nickname.substring(0, 12) + '...' : plrs[i].nickname
-      el.innerHTML = nickname
-      el.setAttribute('data-playerid', plrs[i].playerid)
-      playerslist.append(el)
+      player.querySelector(`[player-name]`).innerText = nickname
+      player.setAttribute('data-playerid', plrs[i].playerid)
+      //add an event listener on the invite button
+      player.querySelector(`[player-invite]`).addEventListener('click', (e) => {
+        //hide invite button
+        e.target.classList.add('hidden')
+        //unhide the word and send
+        player.querySelector('[player-word-and-send').classList.remove('hidden')
+        player.querySelector('[player-word-and-send').classList.add('playerandword-initiator')
+        //add event listener to the Send button
+        player.querySelector('[player-button-send]').addEventListener('click', async () => {
+          let toPlayer = plrs[i].playerid
+          let word = player.querySelector('[player-word]').value.toUpperCase()
+          console.log(playerid, toPlayer, word)
+          let response = await sendAnOffer(playerid, toPlayer, word)
+          console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
+          updatePendingInvitations(playerid)
+          sendMessageOffered(response[0].offerid, playerid, toPlayer)
+          //show the invite button
+          e.target.classList.remove('hidden')
+          //unhide the word and send
+          player.querySelector('[player-word-and-send').classList.add('hidden')
+          player.querySelector('[player-word-and-send').classList.remove('playerandword-initiator')
+        })
+      })
+      playerslist.append(player)
     }
   }
 
 }
 const updateInvitationsList = async (playerid) => {
-  const plrs = await getInvitations(playerid)
-  //console.log(plrs)
+  const invs = await getInvitations(playerid)
+  //console.log(invs)
   const invitationslist = document.getElementById('invitationslist')
-  const invitationslist_els = [...invitationslist.children]
-  if (invitationslist_els.length > 0) {
-    invitationslist_els.forEach(child => {
-      child.remove()
-    });
-  }
-
-  for (let i = 0; i < plrs.length; i++) {
-    let el = document.createElement('div')
-    let nickname = plrs[i].nickname.length > 15 ? plrs[i].nickname.substring(0, 12) + '...' : plrs[i].nickname
-    el.innerHTML = `#${plrs[i].offerid} from ${nickname}`
-    el.setAttribute('data-playerid', plrs[i].fromplayer)
-    el.setAttribute('data-offerid', plrs[i].offerid)
-    el.setAttribute('data-nickname', plrs[i].nickname)
-    invitationslist.append(el)
+  // const invitationslist_els = [...invitationslist.children]
+  // if (invitationslist_els.length > 0) {
+  //   invitationslist_els.forEach(child => {
+  //     child.remove()
+  //   });
+  // }
+  invitationslist.innerHTML = ""
+  let template = document.querySelector('[data-template]')
+  for (let i = 0; i < invs.length; i++) {
+    // let el = document.createElement('div')
+    // let nickname = invs[i].nickname.length > 15 ? invs[i].nickname.substring(0, 12) + '...' : invs[i].nickname
+    // el.innerHTML = `#${invs[i].offerid} from ${nickname}`
+    // el.setAttribute('data-playerid', invs[i].fromplayer)
+    // el.setAttribute('data-offerid', invs[i].offerid)
+    // el.setAttribute('data-nickname', invs[i].nickname)
+    // invitationslist.append(el)
+    let player = template.content.cloneNode(true).children[1]
+    let nickname = invs[i].nickname.length > 15 ? invs[i].nickname.substring(0, 12) + '...' : invs[i].nickname
+    let invitationText = `#${invs[i].offerid} from ${nickname}`
+    player.querySelector('[invitation-text]').innerText = invitationText
+    player.querySelector('[player-accept]').addEventListener('click', (e) => {
+      //hide accept button
+      e.target.classList.add('hidden')
+      //unhide the word and send
+      player.querySelector('[player-word-and-send').classList.remove('hidden')
+      player.querySelector('[player-word-and-send').classList.add('playerandword-acceptor')
+      //add event listener to the Send button
+      player.querySelector('[player-button-send]').addEventListener('click', async () => {
+        let word = player.querySelector('[player-word]').value.toUpperCase()
+        console.log(playerid, invs[i].offerid, word)
+        let response = await acceptAnOffer(playerid, invs[i].offerid, word)
+        console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
+        updateactiveGames(playerid)
+        updateInvitationsList(playerid)
+        sendMessageAccepted(offerid, playerid, invs[i].fromplayer)
+        //show the invite button
+        e.target.classList.remove('hidden')
+        //unhide the word and send
+        player.querySelector('[player-word-and-send').classList.add('hidden')
+        player.querySelector('[player-word-and-send').classList.remove('playerandword-acceptor')
+      })
+    })
+    invitationslist.append(player)
   }
 }
 const updatePendingInvitations = async (playerid) => {
@@ -267,17 +313,17 @@ for (let i = 0; i < kb_buttons.length; i++) {
         for (let ch = 0; ch < row.length; ch++) {
           guess += row[ch].innerText
         }
-        if(guess.trim().length==5){
+        if (guess.trim().length == 5) {
           const status = await existsWord(guess)
-          if(status==200){
+          if (status == 200) {
             // console.log(matchid, playerid, guess, currentRow)
             await submitTry(matchid, playerid, guess, currentRow, opponentid)
             sendMessageMoved(playerid, opponentid, matchid)
             setUsedClass(guess)
-          }else{
+          } else {
             alert(`${guess} is not a valid word.`)
           }
-        }else{
+        } else {
           alert(`Please select a 5 letter word.`)
         }
         break;
@@ -301,68 +347,52 @@ window.addEventListener('load', async () => {
   document.getElementById('btn-results').addEventListener('click', () => {
     document.getElementById('results').style.display = "none"
   })
-  document.getElementById('searchtext').addEventListener('input',async (e)=>{
+  document.getElementById('searchtext').addEventListener('input', async (e) => {
     updatePlayersList(playerid)
   })
   document.getElementById('btn-login').addEventListener('click', login)
   document.getElementById('btn-logout').addEventListener('click', logout)
-  document.getElementById('btn-invite').addEventListener('click', async () => {
-    let toPlayer = document.querySelector('.selectedopponent').dataset.playerid * 1
-    let word = document.querySelector('#challengeword').value.toUpperCase()
-    console.log(playerid, toPlayer, word)
-    let response = await sendAnOffer(playerid, toPlayer, word)
-    console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
-    updatePendingInvitations(playerid)
-    sendMessageOffered(response[0].offerid, playerid, toPlayer)
-  })
-  document.getElementById('btn-accept').addEventListener('click', async () => {
-    let offerid = document.querySelector('.selectedinvitation').dataset.offerid * 1
-    let word = document.querySelector('#challengeword2').value.toUpperCase()
-    let opponentid = document.querySelector('.selectedinvitation').dataset.playerid * 1
-    console.log(offerid, word)
-    let response = await acceptAnOffer(playerid, offerid, word)
-    console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
-    updateactiveGames(playerid)
-    updateInvitationsList(playerid)
-    sendMessageAccepted(offerid, playerid, opponentid)
-  })
+  // document.getElementById('btn-invite').addEventListener('click', async () => {
+  //   let toPlayer = document.querySelector('.selectedopponent').dataset.playerid * 1
+  //   let word = document.querySelector('#challengeword').value.toUpperCase()
+  //   console.log(playerid, toPlayer, word)
+  //   let response = await sendAnOffer(playerid, toPlayer, word)
+  //   console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
+  //   updatePendingInvitations(playerid)
+  //   sendMessageOffered(response[0].offerid, playerid, toPlayer)
+  // })
+  // document.getElementById('btn-accept').addEventListener('click', async () => {
+  //   let offerid = document.querySelector('.selectedinvitation').dataset.offerid * 1
+  //   let word = document.querySelector('#challengeword2').value.toUpperCase()
+  //   let opponentid = document.querySelector('.selectedinvitation').dataset.playerid * 1
+  //   console.log(offerid, word)
+  //   let response = await acceptAnOffer(playerid, offerid, word)
+  //   console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
+  //   updateactiveGames(playerid)
+  //   updateInvitationsList(playerid)
+  //   sendMessageAccepted(offerid, playerid, opponentid)
+  // })
   document.getElementById('background').addEventListener('click', () => {
     document.getElementById('backgroundinfo').classList.toggle('hidden')
   })
-  document.getElementById('challengeword').addEventListener('keyup', async e => {
-    //console.log(`Challenge word: ${e.target.value}`)
-    if (e.target.value.length != 5) {
-      e.target.classList.add('invalid')
-      document.querySelector('#btn-invite').setAttribute('disabled', true)
-      return
-    }
-    let status = await existsWord(e.target.value)
-    //console.log(`Challenge word exists:${status}`)
-    if (status == 200) {
-      e.target.classList.remove('invalid')
-      document.querySelector('#btn-invite').removeAttribute('disabled')
-    } else {
-      e.target.classList.add('invalid')
-      document.querySelector('#btn-invite').setAttribute('disabled', true)
-    }
-  })
-  document.getElementById('challengeword2').addEventListener('keyup', async e => {
-    //console.log(`Challenge word2: ${e.target.value}`)
-    if (e.target.value.length != 5) {
-      e.target.classList.add('invalid')
-      document.querySelector('#btn-accept').setAttribute('disabled', true)
-      return
-    }
-    let status = await existsWord(e.target.value)
-    //console.log(`Challenge word exists:${status}`)
-    if (status == 200) {
-      e.target.classList.remove('invalid')
-      document.querySelector('#btn-accept').removeAttribute('disabled')
-    } else {
-      e.target.classList.add('invalid')
-      document.querySelector('#btn-accept').setAttribute('disabled', true)
-    }
-  })
+
+  // document.getElementById('challengeword2').addEventListener('keyup', async e => {
+  //   //console.log(`Challenge word2: ${e.target.value}`)
+  //   if (e.target.value.length != 5) {
+  //     e.target.classList.add('invalid')
+  //     document.querySelector('#btn-accept').setAttribute('disabled', true)
+  //     return
+  //   }
+  //   let status = await existsWord(e.target.value)
+  //   //console.log(`Challenge word exists:${status}`)
+  //   if (status == 200) {
+  //     e.target.classList.remove('invalid')
+  //     document.querySelector('#btn-accept').removeAttribute('disabled')
+  //   } else {
+  //     e.target.classList.add('invalid')
+  //     document.querySelector('#btn-accept').setAttribute('disabled', true)
+  //   }
+  // })
   document.getElementById('invitationslist').addEventListener('click', e => {
     let invitationsArray = [...document.querySelectorAll("#invitationslist>div")]
     let nickname = e.target.dataset.nickname.length > 15 ? e.target.dataset.nickname.substring(0, 12) + '...' : e.target.dataset.nickname
@@ -371,17 +401,12 @@ window.addEventListener('load', async () => {
     document.getElementById("acceptancemessage").innerText = `Word for offer#: ${e.target.dataset.offerid} from ${nickname}`
     // console.log(e.target)
   });
-  document.getElementById('playerslist').addEventListener('click', e => {
-    let opponentsArray = [...document.querySelectorAll("#playerslist>div")]
-    opponentsArray.forEach(element => element.classList.remove('selectedopponent'))
-    e.target.classList.add('selectedopponent')
-    document.getElementById("invitationmessage").innerText = `Word for ${e.target.innerText}`
-    // console.log(e.target)
-  });
+
   document.addEventListener('keydown', (e) => {
     if (e.target == document.getElementById('challengeword') ||
       e.target == document.getElementById('challengeword2') ||
-      e.target == document.getElementById('searchtext')) {
+      e.target == document.getElementById('searchtext') ||
+      e.target.classList.contains('challengeword')) {
       return
     }
     e.preventDefault()
@@ -398,11 +423,11 @@ window.addEventListener('load', async () => {
         if (currentCol == 0) currentCol = 5
         updateActiveCell(currentRow)
         break;
-      case 'A':case 'B':case 'C':case 'D':case 'E':case 'F':
-      case 'G':case 'H':case 'I':case 'J':case 'K':case 'L':
-      case 'M':case 'N':case 'O':case 'P':case 'Q':case 'R':
-      case 'S':case 'T':case 'U':case 'V':case 'W':case 'X':
-      case 'Y':case 'Z':
+      case 'A': case 'B': case 'C': case 'D': case 'E': case 'F':
+      case 'G': case 'H': case 'I': case 'J': case 'K': case 'L':
+      case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
+      case 'S': case 'T': case 'U': case 'V': case 'W': case 'X':
+      case 'Y': case 'Z':
         //identify the input element for entering the clicked letter
         let row = document.getElementById(`row${currentRow}`)
         let input = Array.from(row.childNodes)[currentCol - 1]
@@ -482,7 +507,7 @@ const updateActiveCell = (row) => {
 
   //here we should set the currentRow and currentCol after the user
   //clicks or otherwise starts a new game
-  if(row!=0){
+  if (row != 0) {
     let rowEls = document.querySelectorAll(`#row${row} > div`)
     let input = rowEls[currentCol - 1]
     input.classList.toggle('active')
@@ -491,7 +516,7 @@ const updateActiveCell = (row) => {
 const updateKeyBoard = (currentRow, matchid) => {
   //if moves played is 6 then disable ENTER on keyboard
   const kbEls = [...document.querySelectorAll(`.key-board button`)]
-  if (currentRow==0 || !matchid) {
+  if (currentRow == 0 || !matchid) {
     kbEls.forEach(kbEl => kbEl.classList.add('disabled'))
   } else {
     kbEls.forEach(kbEl => kbEl.classList.remove('disabled'))
@@ -506,8 +531,8 @@ const setUsedClass = (word) => {
   //set class for each key to indicate that the key has been used
   const buttons = [...document.querySelectorAll('.key-board  button')]
   const chars = word.split('')
-  chars.forEach(ch=>{
-    const button = buttons.findIndex(e=>e.innerText==ch)
+  chars.forEach(ch => {
+    const button = buttons.findIndex(e => e.innerText == ch)
     buttons[button].classList.add('used')
   })
 }

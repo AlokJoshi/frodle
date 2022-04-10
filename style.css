@@ -62,18 +62,18 @@ ol {
 #pendinginvitations{
   grid-area: pendinginvitations;
 }
-#invitationmessageandword{
+/* #invitationmessageandword{
   grid-area: invitationmessageandword;
-}
-#invitationmessageandword>*{
+} */
+/* #invitationmessageandword>*{
   margin-top: 5px;
-}
-#acceptchallengeword{
+} */
+/* #acceptchallengeword{
   grid-area: acceptchallengeword;
 }
 #acceptchallengeword>*{
   margin-top: 5px;
-}
+} */
 #completedgames{
   grid-area: completedgames;
 }
@@ -84,8 +84,8 @@ ol {
   grid-template-rows: 400px;
   grid-template-areas: 
   "activegames currentgameandkeyboard players"
-  "invitationsreceived currentgameandkeyboard invitationmessageandword"
-  "acceptchallengeword completedgames pendinginvitations";
+  "invitationsreceived currentgameandkeyboard pendinginvitations"
+  ". completedgames .";
 }
 #games > div{
   margin:10px;
@@ -194,7 +194,7 @@ ol {
   overflow-x:hidden;
 }
 #pendinginvitationslist,#invitationslist{
-  height: 210px;
+  height: 335px;
   overflow-y:scroll;
   overflow-x:hidden;
 }
@@ -204,6 +204,12 @@ ol {
 #invitationslist div{
   cursor:pointer;
 }
+#playerslist >*{
+  margin-top:2px;
+}
+#invitationslist >*{
+  margin-top:2px;
+}
 #challengeword,#challengeword2{
   width:70px;
   font-weight: bold;
@@ -212,7 +218,12 @@ ol {
 .invalid{
   color:red
 }
-.selectedopponent,.selectedinvitation,.selectedgame{
+/* .selectedopponent,.selectedinvitation,.selectedgame{
+  border:2px solid beige;
+  border-radius: 2px;
+  animation: flip 0.5s linear;
+} */
+.selectedinvitation,.selectedgame{
   border:2px solid beige;
   border-radius: 2px;
   animation: flip 0.5s linear;
@@ -371,4 +382,27 @@ ol {
 }
 .used{
   color: blueviolet;
+}
+.player-initiator{
+  display:grid;
+  grid-template-columns: minmax(100px,1fr) 1fr;
+  grid-gap:0.25em;
+}
+.player-acceptor{
+  display:grid;
+  grid-template-columns: minmax(170px,1fr) 1fr;
+  grid-gap:0.25em;
+}
+.playerandword-initiator{
+  display:grid;
+  grid-template-columns: 70px 1fr;
+  grid-gap:0.25em;
+}
+.playerandword-acceptor{
+  display:grid;
+  grid-template-columns: 70px 1fr;
+  grid-gap:0.25em;
+}
+.invitebutton,.acceptbutton{
+  max-width: 70px;
 }

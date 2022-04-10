@@ -81,16 +81,16 @@
       <div id="activegameslist"></div>
     </div>
     <div id="invitationsreceived">
-      <h2 class="sectionheading">Invitations to play</h2>
+      <h2 class="sectionheading" title="Click to accept invitation">Invitations to play</h2>
       <div id="invitationslist"></div>
     </div>
-    <div id="acceptchallengeword">
+    <!-- <div id="acceptchallengeword">
       <h2 class="sectionheading">Accept Challenge Word</h2>
       <h2 id="acceptancemessage">Word for</h2>
       <input id="challengeword2" class="invalid" maxlength="5" minlength="5">
       <br>
       <button id="btn-accept" disabled>Accept Invite</button>
-    </div>
+    </div> -->
     <div id="currentgameandkeyboard">
       <div id="currentgame">
         <h2 style="text-align:center;color:#222222">Current Game</h2>
@@ -165,13 +165,13 @@
       </span>
       <div id="playerslist"></div>
     </div>
-    <div id="invitationmessageandword">
+    <!-- <div id="invitationmessageandword">
       <h2 class="sectionheading">Invite Challenge Word</h2>
       <h2 id="invitationmessage">Word for</h2>
       <input id="challengeword" class="invalid" maxlength="5" minlength="5">
       <br>
       <button id="btn-invite" disabled>Invite</button>
-    </div>
+    </div> -->
     <div id="pendinginvitations">
       <h2 class="sectionheading">Pending Invitations</h2>
       <div id="pendinginvitationslist"></div>
@@ -186,6 +186,24 @@
     <h3 id="resultsdetails">You won</h3>
     <button id="btn-results">OK</button>
   </div>
+  <template data-template>
+    <div class="player-initiator" player-initiator>
+      <span player-name></span>
+      <button class="invitebutton" player-invite title="Invite to play with you">Invite</button>
+      <div class="hidden" player-word-and-send>
+        <input class="challengeword" player-word type="text" minlength="5" maxlength="5">
+        <button player-button-send>Send</button>
+      </div>
+    </div>
+    <div class="player-acceptor" player-acceptor>
+      <span invitation-text></span>
+      <button class="acceptbutton" player-accept title="Click to accept">Accept</button>
+      <div class="hidden" player-word-and-send>
+        <input class="challengeword" player-word type="text" minlength="5" maxlength="5">
+        <button player-button-send>Send</button>
+      </div>
+    </div>
+  </template>
   <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"
     integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
     crossorigin="anonymous"></script>
