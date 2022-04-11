@@ -218,11 +218,6 @@ ol {
 .invalid{
   color:red
 }
-/* .selectedopponent,.selectedinvitation,.selectedgame{
-  border:2px solid beige;
-  border-radius: 2px;
-  animation: flip 0.5s linear;
-} */
 .selectedinvitation,.selectedgame{
   border:2px solid beige;
   border-radius: 2px;
@@ -381,7 +376,7 @@ ol {
   margin-top: 1px;
 }
 .used{
-  color: blueviolet;
+  color: blue;
 }
 .player-initiator{
   display:grid;

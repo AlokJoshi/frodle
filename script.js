@@ -123,7 +123,7 @@ const updateMatchGrid = async (matchid, playerid) => {
           setTimeout(() => {
             row[ch].classList.add(`flip`)
             row[ch].classList.add(`t${tries[atry].result[ch]}`)
-          }, ch * 200)
+          }, ch * 1000)
         } else {
           row[ch].classList.add(`t${tries[atry].result[ch]}`)
         }
@@ -270,7 +270,7 @@ const updateInvitationsList = async (playerid) => {
         console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
         updateactiveGames(playerid)
         updateInvitationsList(playerid)
-        sendMessageAccepted(offerid, playerid, invs[i].fromplayer)
+        sendMessageAccepted(invs[i].offerid, playerid, invs[i].fromplayer)
         //show the invite button
         e.target.classList.remove('hidden')
         //unhide the word and send
@@ -393,14 +393,14 @@ window.addEventListener('load', async () => {
   //     document.querySelector('#btn-accept').setAttribute('disabled', true)
   //   }
   // })
-  document.getElementById('invitationslist').addEventListener('click', e => {
-    let invitationsArray = [...document.querySelectorAll("#invitationslist>div")]
-    let nickname = e.target.dataset.nickname.length > 15 ? e.target.dataset.nickname.substring(0, 12) + '...' : e.target.dataset.nickname
-    invitationsArray.forEach(element => element.classList.remove('selectedinvitation'))
-    e.target.classList.add('selectedinvitation')
-    document.getElementById("acceptancemessage").innerText = `Word for offer#: ${e.target.dataset.offerid} from ${nickname}`
-    // console.log(e.target)
-  });
+  // document.getElementById('invitationslist').addEventListener('click', e => {
+  //   let invitationsArray = [...document.querySelectorAll("#invitationslist>div")]
+  //   let nickname = e.target.dataset.nickname.length > 15 ? e.target.dataset.nickname.substring(0, 12) + '...' : e.target.dataset.nickname
+  //   invitationsArray.forEach(element => element.classList.remove('selectedinvitation'))
+  //   e.target.classList.add('selectedinvitation')
+  //   document.getElementById("acceptancemessage").innerText = `Word for offer#: ${e.target.dataset.offerid} from ${nickname}`
+  //   // console.log(e.target)
+  // });
 
   document.addEventListener('keydown', (e) => {
     if (e.target == document.getElementById('challengeword') ||
