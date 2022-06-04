@@ -375,8 +375,10 @@ ol {
   border-radius: 3px;
   margin-top: 1px;
 }
-.used{
-  color: blue;
+button.used{
+  background:darkblue;
+  color: white;
+  font-weight:bolder;
 }
 .player-initiator{
   display:grid;
