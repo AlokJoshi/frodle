@@ -526,7 +526,7 @@ const updateKeyBoard = (currentRow, matchid) => {
 const resetKeyBoard = () => {
   //if moves played is 6 then disable ENTER on keyboard
   const kbEls = [...document.querySelectorAll(`.key-board button`)]
-  kbEls.forEach(kbEl => kbEl.classList.remove('used'))
+  kbEls.forEach(kbEl => kbEl.classList.remove('used','t1','t2'))
 }
 const setUsedClass = (word) => {
   //set class for each key to indicate that the key has been used
