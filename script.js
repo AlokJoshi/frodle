@@ -547,7 +547,7 @@ const setUsedClassNew = (row) => {
     if(button>-1){
       if(rowEl.classList.contains('t0')){
         buttons[button].classList.add('used')
-      }else if(rowEl.classList.contains('t1') && !buttons[button].classList.containes('t2')){
+      }else if(rowEl.classList.contains('t1') && !buttons[button].classList.contains('t2')){
         buttons[button].classList.add('t1')
       }else if(rowEl.classList.contains('t2')){
         buttons[button].classList.add('t2')
