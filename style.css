@@ -376,7 +376,7 @@ ol {
   margin-top: 1px;
 }
 button.used{
-  background:darkblue;
+  background:#2e2e2e;
   color: white;
   font-weight:bolder;
 }
