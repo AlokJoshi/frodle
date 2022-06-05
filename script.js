@@ -215,17 +215,21 @@ const updatePlayersList = async (playerid) => {
         //add event listener to the Send button
         player.querySelector('[player-button-send]').addEventListener('click', async () => {
           let toPlayer = plrs[i].playerid
-          let word = player.querySelector('[player-word]').value.toUpperCase()
-          console.log(playerid, toPlayer, word)
-          let response = await sendAnOffer(playerid, toPlayer, word)
-          console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
-          updatePendingInvitations(playerid)
-          sendMessageOffered(response[0].offerid, playerid, toPlayer)
-          //show the invite button
-          e.target.classList.remove('hidden')
-          //unhide the word and send
-          player.querySelector('[player-word-and-send').classList.add('hidden')
-          player.querySelector('[player-word-and-send').classList.remove('playerandword-initiator')
+          let word = player.querySelector('[player-word]').value.trim().toUpperCase()
+          if(word.length==5){
+            console.log(playerid, toPlayer, word)
+            let response = await sendAnOffer(playerid, toPlayer, word)
+            console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
+            updatePendingInvitations(playerid)
+            sendMessageOffered(response[0].offerid, playerid, toPlayer)
+            //show the invite button
+            e.target.classList.remove('hidden')
+            //unhide the word and send
+            player.querySelector('[player-word-and-send').classList.add('hidden')
+            player.querySelector('[player-word-and-send').classList.remove('playerandword-initiator')
+          }else{
+            alert('Please note that the word should be of 5 characters')
+          }
         })
       })
       playerslist.append(player)
@@ -265,18 +269,22 @@ const updateInvitationsList = async (playerid) => {
       player.querySelector('[player-word-and-send').classList.add('playerandword-acceptor')
       //add event listener to the Send button
       player.querySelector('[player-button-send]').addEventListener('click', async () => {
-        let word = player.querySelector('[player-word]').value.toUpperCase()
-        console.log(playerid, invs[i].offerid, word)
-        let response = await acceptAnOffer(playerid, invs[i].offerid, word)
-        console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
-        updateactiveGames(playerid)
-        updateInvitationsList(playerid)
-        sendMessageAccepted(invs[i].offerid, playerid, invs[i].fromplayer)
-        //show the invite button
-        e.target.classList.remove('hidden')
-        //unhide the word and send
-        player.querySelector('[player-word-and-send').classList.add('hidden')
-        player.querySelector('[player-word-and-send').classList.remove('playerandword-acceptor')
+        let word = player.querySelector('[player-word]').value.trim().toUpperCase()
+        if(word.length==5){
+          console.log(playerid, invs[i].offerid, word)
+          let response = await acceptAnOffer(playerid, invs[i].offerid, word)
+          console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
+          updateactiveGames(playerid)
+          updateInvitationsList(playerid)
+          sendMessageAccepted(invs[i].offerid, playerid, invs[i].fromplayer)
+          //show the invite button
+          e.target.classList.remove('hidden')
+          //unhide the word and send
+          player.querySelector('[player-word-and-send').classList.add('hidden')
+          player.querySelector('[player-word-and-send').classList.remove('playerandword-acceptor')
+        }else{
+          alert('Please note that the word should be of 5 characters')
+        }
       })
     })
     invitationslist.append(player)
@@ -540,6 +548,10 @@ const setUsedClass = (word) => {
 const setUsedClassNew = (row) => {
   //row passed is an array of 5 div elements with innerText and classList properties
   //set class for each key to indicate that the key has been used
+  // const counts={}
+  // row.forEach(rowEl=>{
+  //   counts[rowEl.innerText]=counts[rowEl.innerText]?0:counts[rowEl.innerText]+1
+  // })
   const buttons = [...document.querySelectorAll('.key-board  button')]
   
   row.forEach(rowEl => {
