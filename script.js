@@ -112,7 +112,6 @@ const updateMatchGrid = async (matchid, playerid) => {
   let numCorrect = 0
   for (let atry = 0; atry < movesPlayed; atry++) {
     let row = document.querySelectorAll(`#row${atry + 1} > div`)
-    setUsedClass(tries[atry].try)
     let wordArray = tries[atry].try.split('')
     for (let ch = 0; ch < wordArray.length; ch++) {
       //identify the column
@@ -129,6 +128,8 @@ const updateMatchGrid = async (matchid, playerid) => {
         }
       }
     }
+    // setUsedClass(tries[atry].try)
+    setUsedClassNew(row)
   }
   currentRow = (movesPlayed == 6 || numCorrect == 5) ? 0 : movesPlayed + 1
   // console.log(`Tries made by playerid:${playerid}:${JSON.stringify(tries)},Current Row: ${currentRow}`)
@@ -319,7 +320,7 @@ for (let i = 0; i < kb_buttons.length; i++) {
             // console.log(matchid, playerid, guess, currentRow)
             await submitTry(matchid, playerid, guess, currentRow, opponentid)
             sendMessageMoved(playerid, opponentid, matchid)
-            setUsedClass(guess)
+            // setUsedClass(guess)
           } else {
             alert(`${guess} is not a valid word.`)
           }
@@ -534,6 +535,24 @@ const setUsedClass = (word) => {
   chars.forEach(ch => {
     const button = buttons.findIndex(e => e.innerText == ch)
     buttons[button].classList.add('used')
+  })
+}
+const setUsedClassNew = (row) => {
+  //row passed is an array of 5 div elements with innerText and classList properties
+  //set class for each key to indicate that the key has been used
+  const buttons = [...document.querySelectorAll('.key-board  button')]
+  
+  row.forEach(rowEl => {
+    const button = buttons.findIndex(e => e.innerText == rowEl.innerText)
+    if(button>-1){
+      if(rowEl.classList.contains('t0')){
+        buttons[button].classList.add('used')
+      }else if(rowEl.classList.contains('t1') && !buttons[button].classList.containes('t2')){
+        buttons[button].classList.add('t1')
+      }else if(rowEl.classList.contains('t2')){
+        buttons[button].classList.add('t2')
+      }
+    }
   })
 }
 /*

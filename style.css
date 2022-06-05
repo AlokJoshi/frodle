@@ -380,6 +380,16 @@ button.used{
   color: white;
   font-weight:bolder;
 }
+button.t1{
+  background:yellow;
+  color: black;
+  font-weight:bolder;
+}
+button.t2{
+  background:green;
+  color: black;
+  font-weight:bolder;
+}
 .player-initiator{
   display:grid;
   grid-template-columns: minmax(100px,1fr) 1fr;
