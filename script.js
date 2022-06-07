@@ -27,6 +27,7 @@ import {
   setUpSocketListeners
 } from './messages.js'
 
+import {myalert} from './myalert.js'
 
 /**
  * Starts the authentication flow
@@ -228,7 +229,7 @@ const updatePlayersList = async (playerid) => {
             player.querySelector('[player-word-and-send').classList.add('hidden')
             player.querySelector('[player-word-and-send').classList.remove('playerandword-initiator')
           }else{
-            alert('Please note that the word should be of 5 characters')
+            myalert.show('Murdle','Please note that the word should be of 5 characters')
           }
         })
       })
