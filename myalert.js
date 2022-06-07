@@ -10,6 +10,7 @@ myalert.show = function (alertheading, alerttext) {
   myalert.querySelector('[alerttext]').innerText = alerttext
   myalert.classList.remove('hidden')
   myalert.classList.add('alert')
+  body.append(myalert)
 }
 export {
   myalert
