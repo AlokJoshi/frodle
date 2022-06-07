@@ -284,7 +284,7 @@ const updateInvitationsList = async (playerid) => {
           player.querySelector('[player-word-and-send').classList.add('hidden')
           player.querySelector('[player-word-and-send').classList.remove('playerandword-acceptor')
         }else{
-          alert('Please note that the word should be of 5 characters')
+          myalert.show('Murdle','Please note that the word should be of 5 characters')
         }
       })
     })
@@ -331,10 +331,10 @@ for (let i = 0; i < kb_buttons.length; i++) {
             sendMessageMoved(playerid, opponentid, matchid)
             // setUsedClass(guess)
           } else {
-            alert(`${guess} is not a valid word.`)
+            myalert.show('Murdlle',`${guess} is not a valid word.`)
           }
         } else {
-          alert(`Please select a 5 letter word.`)
+          myalert.show('Murdle',`Please select a 5 letter word.`)
         }
         break;
       case 'BACK':
