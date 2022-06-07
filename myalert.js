@@ -6,8 +6,8 @@ myalert.show = function (alertheading, alerttext) {
   myalert.querySelector('[alertok]').addEventListener('click', (event) => {
     this.parent.classList.add('hidden')
   })
-  myalert.querySelector['alertheading'].innerText = alertheading
-  myalert.querySelector['alerttext'].innerText = alerttext
+  myalert.querySelector('[alertheading]').innerText = alertheading
+  myalert.querySelector('[alerttext]').innerText = alerttext
   myalert.classList.remove('hidden')
   myalert.classList.add('alert')
 }
