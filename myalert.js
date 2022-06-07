@@ -11,4 +11,6 @@ myalert.show = function (alertheading, alerttext) {
   myalert.classList.remove('hidden')
   myalert.classList.add('alert')
 }
-module.exports = myalert
+export {
+  myalert
+}
