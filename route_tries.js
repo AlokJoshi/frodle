@@ -59,21 +59,39 @@ function makeAGuess(req, res) {
 
       let word = data[0][`playerword`]
       let wordArray = word.split('')
+      let remainingChars = [...wordArray]
       let guessArray = guess.split('')
-      console.log(wordArray, guessArray)
+      console.log(wordArray, guessArray,remainingChars)
       //now we check how guess matches up to it
-      let result = []
+      let result = [0,0,0,0,0]
       let numCorrect = 0
+      //first identify only complete matches
       for (let i = 0; i < 5; i++) {
         if (guessArray[i] == wordArray[i]) {
           numCorrect++
-          result.push(2)
-        } else if (wordArray.includes(guessArray[i])) {
-          result.push(1)
-        } else {
-          result.push(0)
+          result[i] = 2
+          //also remove one occurence of this character from remaining chars array
+          const index = remainingChars.findIndex((v)=>v==guessArray[i])
+          remainingChars.splice(index,1)
+        } 
+      }
+      //now handle the other characters in the guessArray
+      for (let i = 0; i < 5; i++) {
+        if(result[i]!=2 && remainingChars.includes(guessArray[i])){
+          result[i] = 1
         }
       }
+      // for (let i = 0; i < 5; i++) {
+      //   if (guessArray[i] == wordArray[i]) {
+      //     numCorrect++
+      //     result.push(2)
+      //   } else if (wordArray.includes(guessArray[i])) {
+      //     result.push(1)
+      //   } else {
+      //     result.push(0)
+      //   }
+      // }
+      
       //do additional processing. Enter the guess in the tries table
       knex('fr_tries')
         .insert({ playerid, matchid, 'try': guess, result })
