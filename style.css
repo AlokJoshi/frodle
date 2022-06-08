@@ -413,3 +413,16 @@ button.t2{
 .invitebutton,.acceptbutton{
   max-width: 70px;
 }
+.alert{
+  position:absolute;
+  top: 50%;
+  left:50%;
+  transform: translate(-50%,-50%);
+  width:auto;
+  border:solid 2px #ccc;
+  border-radius: 2px;;
+  text-align: center;
+  margin: auto;
+  background: beige;
+  padding: 5px;
+}
