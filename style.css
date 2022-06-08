@@ -415,6 +415,14 @@ button.t2{
 }
 .alert{
   position:absolute;
-  top: 200px;
-  left:200px;
+  top: 50%;
+  left:50%;
+  transform: translate(-50%,-50%);
+  width:auto;
+  border:solid 2px #ccc;
+  border-radius: 2px;;
+  text-align: center;
+  margin: auto;
+  background: beige;
+  padding: 5px;
 }

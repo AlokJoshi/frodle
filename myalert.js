@@ -4,7 +4,7 @@ myalert.show = function (alertheading, alerttext) {
   const template = document.querySelector('[data-template]')
   const myalert = template.content.cloneNode(true).children[2]
   myalert.querySelector('[alertok]').addEventListener('click', (event) => {
-    this.parent.classList.add('hidden')
+    myalert.classList.add('hidden')
   })
   myalert.querySelector('[alertheading]').innerText = alertheading
   myalert.querySelector('[alerttext]').innerText = alerttext

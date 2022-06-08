@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
-const port = process.env.PORT || 5500
+const port = process.env.PORT || 5000
 
 //Endpoint to serve the configuration file
 app.get("/auth_config.json", (req, res) => {
