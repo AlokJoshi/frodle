@@ -27,6 +27,7 @@ import {
   setUpSocketListeners
 } from './messages.js'
 
+import {myalert} from './myalert.js'
 
 /**
  * Starts the authentication flow
@@ -209,6 +210,10 @@ const updatePlayersList = async (playerid) => {
       player.querySelector(`[player-invite]`).addEventListener('click', (e) => {
         //hide invite button
         e.target.classList.add('hidden')
+        player.classList.add('selectedinvitation')
+        setInterval(() => {
+          player.classList.remove('selectedinvitation')
+        }, 500);
         //unhide the word and send
         player.querySelector('[player-word-and-send').classList.remove('hidden')
         player.querySelector('[player-word-and-send').classList.add('playerandword-initiator')
@@ -219,6 +224,7 @@ const updatePlayersList = async (playerid) => {
           if(word.length==5){
             console.log(playerid, toPlayer, word)
             let response = await sendAnOffer(playerid, toPlayer, word)
+            player.querySelector('[player-word]').value=''
             console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
             updatePendingInvitations(playerid)
             sendMessageOffered(response[0].offerid, playerid, toPlayer)
@@ -228,7 +234,7 @@ const updatePlayersList = async (playerid) => {
             player.querySelector('[player-word-and-send').classList.add('hidden')
             player.querySelector('[player-word-and-send').classList.remove('playerandword-initiator')
           }else{
-            alert('Please note that the word should be of 5 characters')
+            myalert.show('Murdle','Please note that the word should be of 5 characters')
           }
         })
       })
@@ -264,6 +270,10 @@ const updateInvitationsList = async (playerid) => {
     player.querySelector('[player-accept]').addEventListener('click', (e) => {
       //hide accept button
       e.target.classList.add('hidden')
+      player.classList.add('selectedinvitation')
+      setInterval(() => {
+        player.classList.remove('selectedinvitation')
+      }, 500);
       //unhide the word and send
       player.querySelector('[player-word-and-send').classList.remove('hidden')
       player.querySelector('[player-word-and-send').classList.add('playerandword-acceptor')
@@ -283,7 +293,7 @@ const updateInvitationsList = async (playerid) => {
           player.querySelector('[player-word-and-send').classList.add('hidden')
           player.querySelector('[player-word-and-send').classList.remove('playerandword-acceptor')
         }else{
-          alert('Please note that the word should be of 5 characters')
+          myalert.show('Murdle','Please note that the word should be of 5 characters')
         }
       })
     })
@@ -330,10 +340,10 @@ for (let i = 0; i < kb_buttons.length; i++) {
             sendMessageMoved(playerid, opponentid, matchid)
             // setUsedClass(guess)
           } else {
-            alert(`${guess} is not a valid word.`)
+            myalert.show('Murdlle',`${guess} is not a valid word.`)
           }
         } else {
-          alert(`Please select a 5 letter word.`)
+          myalert.show('Murdle',`Please select a 5 letter word.`)
         }
         break;
       case 'BACK':
@@ -361,55 +371,9 @@ window.addEventListener('load', async () => {
   })
   document.getElementById('btn-login').addEventListener('click', login)
   document.getElementById('btn-logout').addEventListener('click', logout)
-  // document.getElementById('btn-invite').addEventListener('click', async () => {
-  //   let toPlayer = document.querySelector('.selectedopponent').dataset.playerid * 1
-  //   let word = document.querySelector('#challengeword').value.toUpperCase()
-  //   console.log(playerid, toPlayer, word)
-  //   let response = await sendAnOffer(playerid, toPlayer, word)
-  //   console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
-  //   updatePendingInvitations(playerid)
-  //   sendMessageOffered(response[0].offerid, playerid, toPlayer)
-  // })
-  // document.getElementById('btn-accept').addEventListener('click', async () => {
-  //   let offerid = document.querySelector('.selectedinvitation').dataset.offerid * 1
-  //   let word = document.querySelector('#challengeword2').value.toUpperCase()
-  //   let opponentid = document.querySelector('.selectedinvitation').dataset.playerid * 1
-  //   console.log(offerid, word)
-  //   let response = await acceptAnOffer(playerid, offerid, word)
-  //   console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
-  //   updateactiveGames(playerid)
-  //   updateInvitationsList(playerid)
-  //   sendMessageAccepted(offerid, playerid, opponentid)
-  // })
   document.getElementById('background').addEventListener('click', () => {
     document.getElementById('backgroundinfo').classList.toggle('hidden')
   })
-
-  // document.getElementById('challengeword2').addEventListener('keyup', async e => {
-  //   //console.log(`Challenge word2: ${e.target.value}`)
-  //   if (e.target.value.length != 5) {
-  //     e.target.classList.add('invalid')
-  //     document.querySelector('#btn-accept').setAttribute('disabled', true)
-  //     return
-  //   }
-  //   let status = await existsWord(e.target.value)
-  //   //console.log(`Challenge word exists:${status}`)
-  //   if (status == 200) {
-  //     e.target.classList.remove('invalid')
-  //     document.querySelector('#btn-accept').removeAttribute('disabled')
-  //   } else {
-  //     e.target.classList.add('invalid')
-  //     document.querySelector('#btn-accept').setAttribute('disabled', true)
-  //   }
-  // })
-  // document.getElementById('invitationslist').addEventListener('click', e => {
-  //   let invitationsArray = [...document.querySelectorAll("#invitationslist>div")]
-  //   let nickname = e.target.dataset.nickname.length > 15 ? e.target.dataset.nickname.substring(0, 12) + '...' : e.target.dataset.nickname
-  //   invitationsArray.forEach(element => element.classList.remove('selectedinvitation'))
-  //   e.target.classList.add('selectedinvitation')
-  //   document.getElementById("acceptancemessage").innerText = `Word for offer#: ${e.target.dataset.offerid} from ${nickname}`
-  //   // console.log(e.target)
-  // });
 
   document.addEventListener('keydown', (e) => {
     if (e.target == document.getElementById('challengeword') ||
