@@ -19,6 +19,6 @@
     "nodemon": "^2.0.16",
     "pg": "^8.7.3",
     "socket.io": "^4.5.1",
-    "superagent": "^7.1.1"
+    "superagent": "^7.1.6"
   }
 }
