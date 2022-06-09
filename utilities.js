@@ -5,7 +5,18 @@ const utilities = {}
 
 utilities.getImage = (email) => {
   const hash = md5(email.toLowerCase().trim())
-  return `https://www.gravatar.com/avatar/${hash}?s=30&d=robohash`
+  const rnd = Math.random()
+  let d = "robohash"
+  if(rnd<0.25){
+    d="identicon"
+  }else if(rnd<0.5){
+    d="monsterid"
+  }else if(rnd<0.75){
+    d="wavatar"
+  }else if(rnd<1){
+    d = "robohash" 
+  }
+  return `https://www.gravatar.com/avatar/${hash}?s=30&d=${d}`
 }
 
 utilities.updateAllImages = () => {
@@ -13,12 +24,11 @@ utilities.updateAllImages = () => {
     .then(data => {
       try{
         data.forEach(player => {
-          if(!player.picture)  {
-            knex(`fr_players`)
-            .update('picture',utilities.getImage(player.email))
-            .then((data)=>console.log(data))
-            .catch(err => console.log(`Error in updating the picture`))
-          }
+          //console.log(player.email, player.picture)
+          knex(`fr_players`)
+          .update('picture',utilities.getImage(player.email))
+          .where('email',player.email)
+          .catch(err => console.log(`Error in updating the picture`))
         });
       }catch(err){
         console.log(`Error in updating`)

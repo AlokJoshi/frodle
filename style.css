@@ -430,3 +430,7 @@ button.t2{
   width:30px;
   height:30px;
 }
+img{
+  border:#4f4f4f 2px solid;
+  border-radius: 5px;
+}
