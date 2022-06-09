@@ -26,7 +26,7 @@ async function getUser(email) {
     console.log(`Error in /api/users/${playerid}`)
   }
 }
-async function createUser(email, nickname) {
+async function createUser(email, nickname, picture) {
   try {
     const response = await fetch(`api/users`, {
       method: 'POST',
@@ -34,8 +34,9 @@ async function createUser(email, nickname) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        email: email,
-        nickname: nickname
+        email,
+        nickname,
+        picture
       })
     })
     const json = await response.json()
@@ -45,14 +46,14 @@ async function createUser(email, nickname) {
   }
 }
 
-async function createUserIfNeeded(email, nickname) {
+async function createUserIfNeeded(email, nickname, picture) {
   try{
     let users = await getUser(email)
     if (users.length>0) {
       return users[0].playerid
     } else {
       //user does not exist
-      const user = await createUser(email, nickname)
+      const user = await createUser(email, nickname, picture)
       return user[0].playerid
     }
   }catch(err){

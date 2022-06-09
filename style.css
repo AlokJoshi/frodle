@@ -375,7 +375,7 @@ ol {
   border-radius: 3px;
   margin-top: 1px;
 }
-button.used{
+button.t0{
   background:#2e2e2e;
   color: white;
   font-weight:bolder;
@@ -392,7 +392,7 @@ button.t2{
 }
 .player-initiator{
   display:grid;
-  grid-template-columns: minmax(100px,1fr) 1fr;
+  grid-template-columns: 40px minmax(100px,1fr) 1fr;
   grid-gap:0.25em;
 }
 .player-acceptor{
@@ -425,4 +425,8 @@ button.t2{
   margin: auto;
   background: beige;
   padding: 5px;
+}
+.playerpicture{
+  width:30px;
+  height:30px;
 }
