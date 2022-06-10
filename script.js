@@ -463,7 +463,7 @@ const updateUI = async () => {
     console.log(`Server the socket is connecting to: ${server}`)
     socket = io.connect(server)
     console.log(`Auth0 returned a user:${JSON.stringify(user)}`)
-    playerid = await createUserIfNeeded(user.name, user.nickname)
+    playerid = await createUserIfNeeded(user.name, user.nickname, user.picture)
     updateactiveGames(playerid)
     updatecompletedGames(playerid)
     updatePlayersList(playerid)

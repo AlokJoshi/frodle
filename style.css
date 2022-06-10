@@ -367,6 +367,8 @@ button.t2{
 img{
   border:#4f4f4f 2px solid;
   border-radius: 15px;
+  width:30px;
+  height:30px;
 }
 #logo{
   font-size: 2em;
