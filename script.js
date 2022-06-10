@@ -3,9 +3,6 @@ let socket = null;
 
 let currentRow = 1
 let currentCol = 1
-//set the picture, nickname and playerid as soon as the player logs in
-let picture = ''
-let nickname = ''
 var playerid = 0
 var opponentid = 0
 //set the matchid as soon as the match is selected
@@ -459,12 +456,14 @@ const updateUI = async () => {
   document.getElementById(`btn-login`).disabled = isAuthenticated
   let user = await auth0.getUser()
   if (user) {
+    document.getElementById("userpicture").setAttribute('src',user.picture)
+    document.querySelector('#username').innerText = user.nickname
+    document.getElementById("userinfo").style.visibility="visible"
     let server = window.location.origin
     console.log(`Server the socket is connecting to: ${server}`)
     socket = io.connect(server)
     console.log(`Auth0 returned a user:${JSON.stringify(user)}`)
     playerid = await createUserIfNeeded(user.name, user.nickname)
-    nickname = user.nickname
     updateactiveGames(playerid)
     updatecompletedGames(playerid)
     updatePlayersList(playerid)
@@ -473,7 +472,6 @@ const updateUI = async () => {
     setUpSocketListeners(playerid)
     updateActiveCell(currentRow)
     updateKeyBoard(currentRow, matchid)
-    document.querySelector('#title span').innerText = `${nickname}'s Murdle`
   }
 }
 
