@@ -460,4 +460,7 @@ img{
   #other > button{
     font-size: 0.8em;
   }
+  .sectionheading{
+    font-size: 15px;
+  }
 }
