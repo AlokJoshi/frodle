@@ -3,9 +3,6 @@ let socket = null;
 
 let currentRow = 1
 let currentCol = 1
-//set the picture, nickname and playerid as soon as the player logs in
-let picture = ''
-let nickname = ''
 var playerid = 0
 var opponentid = 0
 //set the matchid as soon as the match is selected
@@ -120,10 +117,11 @@ const updateMatchGrid = async (matchid, playerid) => {
       if (tries[atry].result != null) {
         if (atry == (movesPlayed - 1)) {
           numCorrect += tries[atry].result[ch] == 2 ? 1 : 0
-          setTimeout(() => {
+          await new Promise(resolve=>setTimeout(() => {
             row[ch].classList.add(`flip`)
             row[ch].classList.add(`t${tries[atry].result[ch]}`)
-          }, ch * 1000)
+            resolve()
+          }, ch * 300))
         } else {
           row[ch].classList.add(`t${tries[atry].result[ch]}`)
         }
@@ -204,8 +202,11 @@ const updatePlayersList = async (playerid) => {
     if (searchtext == '' || (plrs[i].nickname.toLowerCase().includes(searchtext))) {
       let player = template.content.cloneNode(true).children[0]
       let nickname = plrs[i].nickname.length > 15 ? plrs[i].nickname.substring(0, 12) + '...' : plrs[i].nickname
+      const image = player.querySelector(`[player-image]`)
+      image.setAttribute('src',plrs[i].picture)
       player.querySelector(`[player-name]`).innerText = nickname
       player.setAttribute('data-playerid', plrs[i].playerid)
+      player.setAttribute('title', plrs[i].email)
       //add an event listener on the invite button
       player.querySelector(`[player-invite]`).addEventListener('click', (e) => {
         //hide invite button
@@ -455,12 +456,14 @@ const updateUI = async () => {
   document.getElementById(`btn-login`).disabled = isAuthenticated
   let user = await auth0.getUser()
   if (user) {
+    document.getElementById("userpicture").setAttribute('src',user.picture)
+    document.querySelector('#username').innerText = user.nickname
+    document.getElementById("userinfo").style.visibility="visible"
     let server = window.location.origin
     console.log(`Server the socket is connecting to: ${server}`)
     socket = io.connect(server)
     console.log(`Auth0 returned a user:${JSON.stringify(user)}`)
-    playerid = await createUserIfNeeded(user.name, user.nickname)
-    nickname = user.nickname
+    playerid = await createUserIfNeeded(user.name, user.nickname, user.picture)
     updateactiveGames(playerid)
     updatecompletedGames(playerid)
     updatePlayersList(playerid)
@@ -469,7 +472,6 @@ const updateUI = async () => {
     setUpSocketListeners(playerid)
     updateActiveCell(currentRow)
     updateKeyBoard(currentRow, matchid)
-    document.querySelector('#title span').innerText = `${nickname}'s Murdle`
   }
 }
 
@@ -512,19 +514,18 @@ const setUsedClass = (word) => {
 const setUsedClassNew = (row) => {
   //row passed is an array of 5 div elements with innerText and classList properties
   //set class for each key to indicate that the key has been used
-  // const counts={}
-  // row.forEach(rowEl=>{
-  //   counts[rowEl.innerText]=counts[rowEl.innerText]?0:counts[rowEl.innerText]+1
-  // })
   const buttons = [...document.querySelectorAll('.key-board  button')]
   
   row.forEach(rowEl => {
     const button = buttons.findIndex(e => e.innerText == rowEl.innerText)
     if(button>-1){
       if(rowEl.classList.contains('t0')){
-        buttons[button].classList.add('used')
+        buttons[button].classList.add('t0')
       }else if(rowEl.classList.contains('t1') && !buttons[button].classList.contains('t2')){
         buttons[button].classList.add('t1')
+      }else if(rowEl.classList.contains('t2') && buttons[button].classList.contains('t2')){
+        //do not do anything 
+        //buttons[button].classList.add('t2')
       }else if(rowEl.classList.contains('t2')){
         buttons[button].classList.add('t2')
       }
