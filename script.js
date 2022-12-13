@@ -44,7 +44,7 @@ const login = async () => {
  */
 const logout = () => {
   try {
-    console.log("Logging out");
+    console.log(`Logging out: returning user to: ${window.location.origin}`);
     auth0.logout({
       returnTo: window.location.origin
     });
