@@ -106,9 +106,6 @@ async function existsWord(word) {
   // console.log(`Player id being sent to /api/users/other/${playerid}`)
   try {
     const response = await fetch(`/api/exists/${word}`)
-    //const json = await response.json()
-    //console.log(`json.status:${json.status}`)
-    // console.log(`response.status:${response.status}`)
     return response.status
   } catch (err) {
     console.log(`Error in existsWord`)

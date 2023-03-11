@@ -222,18 +222,25 @@ const updatePlayersList = async (playerid) => {
         player.querySelector('[player-button-send]').addEventListener('click', async () => {
           let toPlayer = plrs[i].playerid
           let word = player.querySelector('[player-word]').value.trim().toUpperCase()
+          
           if(word.length==5){
-            console.log(playerid, toPlayer, word)
-            let response = await sendAnOffer(playerid, toPlayer, word)
-            player.querySelector('[player-word]').value=''
-            console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
-            updatePendingInvitations(playerid)
-            sendMessageOffered(response[0].offerid, playerid, toPlayer)
-            //show the invite button
-            e.target.classList.remove('hidden')
-            //unhide the word and send
-            player.querySelector('[player-word-and-send').classList.add('hidden')
-            player.querySelector('[player-word-and-send').classList.remove('playerandword-initiator')
+            const status = await existsWord(word)
+            if(status==200){
+
+              console.log(playerid, toPlayer, word)
+              let response = await sendAnOffer(playerid, toPlayer, word)
+              player.querySelector('[player-word]').value=''
+              console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
+              updatePendingInvitations(playerid)
+              sendMessageOffered(response[0].offerid, playerid, toPlayer)
+              //show the invite button
+              e.target.classList.remove('hidden')
+              //unhide the word and send
+              player.querySelector('[player-word-and-send').classList.add('hidden')
+              player.querySelector('[player-word-and-send').classList.remove('playerandword-initiator')
+            }else{
+              myalert.show('Murdlle',`${word} is not a valid word.`) 
+            }
           }else{
             myalert.show('Murdle','Please note that the word should be of 5 characters')
           }
