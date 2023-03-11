@@ -24,7 +24,7 @@ import {
   setUpSocketListeners
 } from './messages.js'
 
-import {myalert} from './myalert.js'
+import { myalert } from './myalert.js'
 
 /**
  * Starts the authentication flow
@@ -117,7 +117,7 @@ const updateMatchGrid = async (matchid, playerid) => {
       if (tries[atry].result != null) {
         if (atry == (movesPlayed - 1)) {
           numCorrect += tries[atry].result[ch] == 2 ? 1 : 0
-          await new Promise(resolve=>setTimeout(() => {
+          await new Promise(resolve => setTimeout(() => {
             row[ch].classList.add(`flip`)
             row[ch].classList.add(`t${tries[atry].result[ch]}`)
             resolve()
@@ -203,7 +203,7 @@ const updatePlayersList = async (playerid) => {
       let player = template.content.cloneNode(true).children[0]
       let nickname = plrs[i].nickname.length > 15 ? plrs[i].nickname.substring(0, 12) + '...' : plrs[i].nickname
       const image = player.querySelector(`[player-image]`)
-      image.setAttribute('src',plrs[i].picture)
+      image.setAttribute('src', plrs[i].picture)
       player.querySelector(`[player-name]`).innerText = nickname
       player.setAttribute('data-playerid', plrs[i].playerid)
       player.setAttribute('title', plrs[i].email)
@@ -222,14 +222,14 @@ const updatePlayersList = async (playerid) => {
         player.querySelector('[player-button-send]').addEventListener('click', async () => {
           let toPlayer = plrs[i].playerid
           let word = player.querySelector('[player-word]').value.trim().toUpperCase()
-          
-          if(word.length==5){
+
+          if (word.length == 5) {
             const status = await existsWord(word)
-            if(status==200){
+            if (status == 200) {
 
               console.log(playerid, toPlayer, word)
               let response = await sendAnOffer(playerid, toPlayer, word)
-              player.querySelector('[player-word]').value=''
+              player.querySelector('[player-word]').value = ''
               console.log(`Response after sending an offer: ${JSON.stringify(response)}`)
               updatePendingInvitations(playerid)
               sendMessageOffered(response[0].offerid, playerid, toPlayer)
@@ -238,11 +238,11 @@ const updatePlayersList = async (playerid) => {
               //unhide the word and send
               player.querySelector('[player-word-and-send').classList.add('hidden')
               player.querySelector('[player-word-and-send').classList.remove('playerandword-initiator')
-            }else{
-              myalert.show('Murdlle',`${word} is not a valid word.`) 
+            } else {
+              myalert.show('Murdlle', `${word} is not a valid word.`)
             }
-          }else{
-            myalert.show('Murdle','Please note that the word should be of 5 characters')
+          } else {
+            myalert.show('Murdle', 'Please note that the word should be of 5 characters')
           }
         })
       })
@@ -288,20 +288,25 @@ const updateInvitationsList = async (playerid) => {
       //add event listener to the Send button
       player.querySelector('[player-button-send]').addEventListener('click', async () => {
         let word = player.querySelector('[player-word]').value.trim().toUpperCase()
-        if(word.length==5){
-          console.log(playerid, invs[i].offerid, word)
-          let response = await acceptAnOffer(playerid, invs[i].offerid, word)
-          console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
-          updateactiveGames(playerid)
-          updateInvitationsList(playerid)
-          sendMessageAccepted(invs[i].offerid, playerid, invs[i].fromplayer)
-          //show the invite button
-          e.target.classList.remove('hidden')
-          //unhide the word and send
-          player.querySelector('[player-word-and-send').classList.add('hidden')
-          player.querySelector('[player-word-and-send').classList.remove('playerandword-acceptor')
-        }else{
-          myalert.show('Murdle','Please note that the word should be of 5 characters')
+        if (word.length == 5) {
+          const status = await existsWord(word)
+          if (status == 200) {
+            console.log(playerid, invs[i].offerid, word)
+            let response = await acceptAnOffer(playerid, invs[i].offerid, word)
+            console.log(`Response after accepting an offer: ${JSON.stringify(response)}`)
+            updateactiveGames(playerid)
+            updateInvitationsList(playerid)
+            sendMessageAccepted(invs[i].offerid, playerid, invs[i].fromplayer)
+            //show the invite button
+            e.target.classList.remove('hidden')
+            //unhide the word and send
+            player.querySelector('[player-word-and-send').classList.add('hidden')
+            player.querySelector('[player-word-and-send').classList.remove('playerandword-acceptor')
+          } else {
+            myalert.show('Murdlle', `${word} is not a valid word.`)
+          }
+        } else {
+          myalert.show('Murdle', 'Please note that the word should be of 5 characters')
         }
       })
     })
@@ -348,10 +353,10 @@ for (let i = 0; i < kb_buttons.length; i++) {
             sendMessageMoved(playerid, opponentid, matchid)
             // setUsedClass(guess)
           } else {
-            myalert.show('Murdlle',`${guess} is not a valid word.`)
+            myalert.show('Murdlle', `${guess} is not a valid word.`)
           }
         } else {
-          myalert.show('Murdle',`Please select a 5 letter word.`)
+          myalert.show('Murdle', `Please select a 5 letter word.`)
         }
         break;
       case 'BACK':
@@ -463,9 +468,9 @@ const updateUI = async () => {
   document.getElementById(`btn-login`).disabled = isAuthenticated
   let user = await auth0.getUser()
   if (user) {
-    document.getElementById("userpicture").setAttribute('src',user.picture)
+    document.getElementById("userpicture").setAttribute('src', user.picture)
     document.querySelector('#username').innerText = user.nickname
-    document.getElementById("userinfo").style.visibility="visible"
+    document.getElementById("userinfo").style.visibility = "visible"
     let server = window.location.origin
     console.log(`Server the socket is connecting to: ${server}`)
     socket = io.connect(server)
@@ -507,7 +512,7 @@ const updateKeyBoard = (currentRow, matchid) => {
 const resetKeyBoard = () => {
   //if moves played is 6 then disable ENTER on keyboard
   const kbEls = [...document.querySelectorAll(`.key-board button`)]
-  kbEls.forEach(kbEl => kbEl.classList.remove('used','t1','t2'))
+  kbEls.forEach(kbEl => kbEl.classList.remove('used', 't1', 't2'))
 }
 const setUsedClass = (word) => {
   //set class for each key to indicate that the key has been used
@@ -522,18 +527,18 @@ const setUsedClassNew = (row) => {
   //row passed is an array of 5 div elements with innerText and classList properties
   //set class for each key to indicate that the key has been used
   const buttons = [...document.querySelectorAll('.key-board  button')]
-  
+
   row.forEach(rowEl => {
     const button = buttons.findIndex(e => e.innerText == rowEl.innerText)
-    if(button>-1){
-      if(rowEl.classList.contains('t0')){
+    if (button > -1) {
+      if (rowEl.classList.contains('t0')) {
         buttons[button].classList.add('t0')
-      }else if(rowEl.classList.contains('t1') && !buttons[button].classList.contains('t2')){
+      } else if (rowEl.classList.contains('t1') && !buttons[button].classList.contains('t2')) {
         buttons[button].classList.add('t1')
-      }else if(rowEl.classList.contains('t2') && buttons[button].classList.contains('t2')){
+      } else if (rowEl.classList.contains('t2') && buttons[button].classList.contains('t2')) {
         //do not do anything 
         //buttons[button].classList.add('t2')
-      }else if(rowEl.classList.contains('t2')){
+      } else if (rowEl.classList.contains('t2')) {
         buttons[button].classList.add('t2')
       }
     }
