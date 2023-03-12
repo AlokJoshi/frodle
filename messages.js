@@ -29,10 +29,13 @@ const sendMessageAccepted = (offerid,fromplayer,toplayer)=>{
 const setUpSocketListeners=(playerid)=>{
   socket.on(MSG_MOVED,async (data)=>{
     //do something when the message is received back
-    // console.log(`MSG_MOVED received ${JSON.stringify(data)}`)
-    if(data.playerid == playerid){
-      await updateMatchGrid(data.matchid,playerid)
-    }
+    //instead of updating the match grid when the MSG_MOVED is received back
+    //by the player I decided to do so when the player makes the Move that
+    //is when the player MOVES and sends the MSG_MOVED
+    
+    // if(data.playerid == playerid){
+    //   await updateMatchGrid(data.matchid,playerid)
+    // }
     if(data.playerid == playerid || data.opponentid == playerid)
     await updateactiveGames(playerid)
     await updatecompletedGames(playerid)

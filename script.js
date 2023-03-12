@@ -127,7 +127,6 @@ const updateMatchGrid = async (matchid, playerid) => {
         }
       }
     }
-    // setUsedClass(tries[atry].try)
     setUsedClassNew(row)
   }
   currentRow = (movesPlayed == 6 || numCorrect == 5) ? 0 : movesPlayed + 1
@@ -351,7 +350,7 @@ for (let i = 0; i < kb_buttons.length; i++) {
             // console.log(matchid, playerid, guess, currentRow)
             await submitTry(matchid, playerid, guess, currentRow, opponentid)
             sendMessageMoved(playerid, opponentid, matchid)
-            // setUsedClass(guess)
+            await updateMatchGrid(matchid,playerid)
           } else {
             myalert.show('Murdlle', `${guess} is not a valid word.`)
           }
@@ -514,15 +513,7 @@ const resetKeyBoard = () => {
   const kbEls = [...document.querySelectorAll(`.key-board button`)]
   kbEls.forEach(kbEl => kbEl.classList.remove('used', 't1', 't2'))
 }
-const setUsedClass = (word) => {
-  //set class for each key to indicate that the key has been used
-  const buttons = [...document.querySelectorAll('.key-board  button')]
-  const chars = word.split('')
-  chars.forEach(ch => {
-    const button = buttons.findIndex(e => e.innerText == ch)
-    buttons[button].classList.add('used')
-  })
-}
+
 const setUsedClassNew = (row) => {
   //row passed is an array of 5 div elements with innerText and classList properties
   //set class for each key to indicate that the key has been used
@@ -592,6 +583,20 @@ const displayResults = (heading, details) => {
   resultsEl.style.display = 'block'
 
 }
+
+function throttle(event, func, delay = 2000) {
+  let curr_time = (new Date()).valueOf()
+  console.log(curr_time)
+  if (next_time) {
+    if (curr_time > next_time) {
+      func(event)
+      next_time = curr_time + delay
+    } 
+  }else {
+    next_time = curr_time + delay
+  }
+}
+
 export {
   socket,
   updateMatchGrid,
