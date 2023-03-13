@@ -5,16 +5,17 @@ types.setTypeParser(20, function (val) {
   return parseInt(val)
 })
 
-console.log(process.env.DB_HOST, process.env.DB_USER,process.env.DB_PASSWORD, process.env.DB_DATABASE, process.env.PORT)
+console.log(process.env.DATABASE_URL)
 let knex = require('knex')({
   client: 'pg',
   version: '9.6',
   connection: {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    port: process.env.DB_PORT,
+    // host: process.env.DB_HOST,
+    // user: process.env.DB_USER,
+    // password: process.env.DB_PASSWORD,
+    // database: process.env.DB_DATABASE,
+    // port: process.env.DB_PORT,
+    connectionString: process.env.DATABASE_URL,
     ssl:{rejectUnauthorized:false}
   },
   pool: { min: 0, max: 7 }
