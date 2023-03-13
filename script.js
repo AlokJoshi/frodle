@@ -330,6 +330,10 @@ const updatePendingInvitations = async (playerid) => {
     pendinginvitationslist.append(el)
   }
 }
+const disableKeyBoard =()=>{
+  const kbEls = [...document.querySelectorAll(`.key-board button`)]
+  kbEls.forEach(kbEl => kbEl.classList.add('disabled'))
+}
 
 let kb_buttons = document.querySelectorAll('.key-row button')
 // console.log(kb_buttons)
@@ -348,6 +352,8 @@ for (let i = 0; i < kb_buttons.length; i++) {
           const status = await existsWord(guess)
           if (status == 200) {
             // console.log(matchid, playerid, guess, currentRow)
+            // first disable the keyboard so that the user cannot click on ENTER again
+            disableKeyBoard()
             await submitTry(matchid, playerid, guess, currentRow, opponentid)
             sendMessageMoved(playerid, opponentid, matchid)
             // setUsedClass(guess)
@@ -508,6 +514,9 @@ const updateKeyBoard = (currentRow, matchid) => {
     kbEls.forEach(kbEl => kbEl.classList.remove('disabled'))
   }
 }
+
+
+
 const resetKeyBoard = () => {
   //if moves played is 6 then disable ENTER on keyboard
   const kbEls = [...document.querySelectorAll(`.key-board button`)]
