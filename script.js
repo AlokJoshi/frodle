@@ -356,7 +356,7 @@ for (let i = 0; i < kb_buttons.length; i++) {
             disableKeyBoard()
             await submitTry(matchid, playerid, guess, currentRow, opponentid)
             sendMessageMoved(playerid, opponentid, matchid)
-            // setUsedClass(guess)
+            await updateMatchGrid(matchid,playerid)
           } else {
             myalert.show('Murdlle', `${guess} is not a valid word.`)
           }
