@@ -352,6 +352,8 @@ for (let i = 0; i < kb_buttons.length; i++) {
           const status = await existsWord(guess)
           if (status == 200) {
             // console.log(matchid, playerid, guess, currentRow)
+            //disabling keyBoard was not working to prevent double enter
+            e.target.style.pointerEvents = "none"
             // first disable the keyboard so that the user cannot click on ENTER again
             disableKeyBoard()
             await submitTry(matchid, playerid, guess, currentRow, opponentid)
@@ -362,6 +364,7 @@ for (let i = 0; i < kb_buttons.length; i++) {
         } else {
           myalert.show('Murdle', `Please select a 5 letter word.`)
         }
+        e.target.style.pointerEvents = "true"
         break;
       case 'BACK':
         currentCol = currentCol == 1 ? currentCol : currentCol - 1
