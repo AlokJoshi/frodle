@@ -380,6 +380,9 @@ for (let i = 0; i < kb_buttons.length; i++) {
   })
 }
 window.addEventListener('load', async () => {
+  document.querySelector('#enterbutton').addEventListener('dblclick',(e)=>{
+    e.preventDefault()
+  })
   document.getElementById('btn-results').addEventListener('click', () => {
     document.getElementById('results').style.display = "none"
   })
