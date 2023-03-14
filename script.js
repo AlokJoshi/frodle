@@ -358,13 +358,13 @@ for (let i = 0; i < kb_buttons.length; i++) {
             // disableKeyBoard()
             await submitTry(matchid, playerid, guess, currentRow, opponentid)
             sendMessageMoved(playerid, opponentid, matchid)
+            e.target.style.pointerEvents = "auto"
           } else {
             myalert.show('Murdlle', `${guess} is not a valid word.`)
           }
         } else {
           myalert.show('Murdle', `Please select a 5 letter word.`)
         }
-        e.target.style.pointerEvents = "auto"
         break;
       case 'BACK':
         currentCol = currentCol == 1 ? currentCol : currentCol - 1
@@ -383,6 +383,7 @@ for (let i = 0; i < kb_buttons.length; i++) {
   })
 }
 window.addEventListener('load', async () => {
+
   document.querySelector('#enterbutton').addEventListener('dblclick',(e)=>{
     e.preventDefault()
   })
