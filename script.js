@@ -364,7 +364,7 @@ for (let i = 0; i < kb_buttons.length; i++) {
         } else {
           myalert.show('Murdle', `Please select a 5 letter word.`)
         }
-        e.target.style.pointerEvents = "true"
+        e.target.style.pointerEvents = "auto"
         break;
       case 'BACK':
         currentCol = currentCol == 1 ? currentCol : currentCol - 1
