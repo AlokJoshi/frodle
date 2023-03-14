@@ -355,7 +355,7 @@ for (let i = 0; i < kb_buttons.length; i++) {
             //disabling keyBoard was not working to prevent double enter
             e.target.style.pointerEvents = "none"
             // first disable the keyboard so that the user cannot click on ENTER again
-            disableKeyBoard()
+            // disableKeyBoard()
             await submitTry(matchid, playerid, guess, currentRow, opponentid)
             sendMessageMoved(playerid, opponentid, matchid)
           } else {
