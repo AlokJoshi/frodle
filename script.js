@@ -358,7 +358,9 @@ for (let i = 0; i < kb_buttons.length; i++) {
             // disableKeyBoard()
             await submitTry(matchid, playerid, guess, currentRow, opponentid)
             sendMessageMoved(playerid, opponentid, matchid)
-            e.target.style.pointerEvents = "auto"
+            setTimeout(()=>{
+              e.target.style.pointerEvents = "auto"
+            },2000)
           } else {
             myalert.show('Murdlle', `${guess} is not a valid word.`)
           }
