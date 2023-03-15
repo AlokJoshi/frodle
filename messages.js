@@ -6,11 +6,17 @@ const MSG_OFFERED='MSG_OFFERED'
 const MSG_ACCEPTED='MSG_ACCEPTED'
 
 const sendMessageMoved = (playerid,opponentid,matchid)=>{
-  socket.emit(MSG_MOVED,{
-    playerid,
-    opponentid,
-    matchid
-  })  
+  let lastTime=0
+  const currTime = (new Date()).valueOf()
+  if(currTime-lastTime>500){
+    socket.emit(MSG_MOVED,{
+      playerid,
+      opponentid,
+      matchid
+    }) 
+  }
+  lastTime=currTime 
+  console.log(`Diff in sendMessageMoved: ${currTime-lastTime}`)
 }
 const sendMessageOffered = (offerid,fromplayer,toplayer)=>{
   socket.emit(MSG_OFFERED,{
