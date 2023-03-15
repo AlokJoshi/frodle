@@ -4,9 +4,9 @@ import { socket,updateMatchGrid,updateInvitationsList,
 const MSG_MOVED='MSG_MOVED'
 const MSG_OFFERED='MSG_OFFERED'
 const MSG_ACCEPTED='MSG_ACCEPTED'
+let lastTime=0
 
 const sendMessageMoved = (playerid,opponentid,matchid)=>{
-  let lastTime=0
   const currTime = (new Date()).valueOf()
   if(currTime-lastTime>500){
     socket.emit(MSG_MOVED,{
