@@ -15,8 +15,8 @@ const sendMessageMoved = (playerid,opponentid,matchid)=>{
       matchid
     }) 
   }
-  lastTime=currTime 
   console.log(`Diff in sendMessageMoved: ${currTime-lastTime}`)
+  lastTime=currTime 
 }
 const sendMessageOffered = (offerid,fromplayer,toplayer)=>{
   socket.emit(MSG_OFFERED,{
